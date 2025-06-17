@@ -200,9 +200,9 @@
     }
 
     const sampleNFTs = [
-      { name: "Dream Fragment #1", image: "https://via.placeholder.com/300x300.png?text=NFT+1" },
-      { name: "Meta Vision", image: "https://via.placeholder.com/300x300.png?text=NFT+2" },
-      { name: "Code & Canvas", image: "https://via.placeholder.com/300x300.png?text=NFT+3" }
+      { name: "Dream Fragment #1", img src="ChatGPT Image Jun 17, 2025, 06_41_59 AM.png " },
+      { name: "Meta Vision", img src="sigma 22.jpg" },
+      { name: "Code & Canvas",img src="sigma 11.jpg" }
     ];
 
     window.onload = () => {
@@ -210,7 +210,7 @@
       sampleNFTs.forEach(nft => {
         const card = document.createElement('div');
         card.className = 'nft-card';
-        card.innerHTML = `<img src="${nft.image}" alt="${nft.name}" /><h4>${nft.name}</h4>`;
+        card.innerHTML = `<img src="sigma 22.jpg" alt="${nft.name}" /><h4>${nft.name}</h4>`;
         gallery.appendChild(card);
       });
     }
