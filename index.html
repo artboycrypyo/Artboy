@@ -1,246 +1,367 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artboy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-  <script src="https://unpkg.com/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.1/lib/index.iife.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Playfair Display', serif;
-      background-color: #f5f2ea;
-      color: #2f2f2f;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    header {
-      background-color: #e8dfd2;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #b6a68b;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      color: #2f2f2f;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      background-color: #d8ccb6;
-      padding: 15px 0;
-    }
-    nav a {
-      text-decoration: none;
-      color: #2f2f2f;
-      font-weight: bold;
-    }
-    .hero {
-      background-image: url('https://images.unsplash.com/photo-1504198453319-5ce911bafcde');
-      background-size: cover;
-      background-position: center;
-      height: 70vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      position: relative;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(0deg, rgba(0,255,0,0.05), rgba(0,255,0,0.05) 1px, transparent 1px, transparent 2px);
-      pointer-events: none;
-    }
-    .hero h2 {
-      font-size: 3rem;
-      z-index: 1;
-    }
-    .section {
-      padding: 60px 20px;
-      text-align: center;
-    }
-    .section h3 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    .section p {
-      max-width: 700px;
-      margin: auto;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .nft-card {
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 10px;
-      background: #fff;
-    }
-    .nft-card img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    .wallet-section, .mint-section {
-      margin-top: 40px;
-    }
-    button.connect-wallet {
-      background-color: #b6a68b;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    #wallet-address {
-      margin-top: 15px;
-      font-weight: bold;
-      word-break: break-all;
-    }
-    footer {
-      background-color: #d8ccb6;
-      padding: 20px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #555;
-    }
-    input, textarea {
-      padding: 10px;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 500px;
-    }
-    .mint-form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTBOY | Portofolio Seniman</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
+        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
+        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color:var(--text-color);margin:0;padding:0}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
+        nav{display:flex;justify-content:space-between;align-items:center}
+        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
+        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
+        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
+        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
+        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
+        .hero-text{flex-basis:50%}
+        .hero-image{flex-basis:45%;text-align:right}
+        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
+        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
+        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
+        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
+        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
+        section{padding:100px 0}
+        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; align-items:center; justify-content:center;}
+        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
+        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
+        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
+        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
+        .gallery-card-info{padding:1.5rem}
+        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
+        .about-content{display:flex; gap:3rem; align-items:center;}
+        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
+        .about-image img{width:100%; border-radius:10px;}
+        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
+        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
+        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
+        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
+    </style>
 </head>
 <body>
-  <header>
-    <h1>ARTBOY</h1>
-  </header>
-  <nav>
-    <a href="#about">About</a>
-    <a href="#projects">Projects</a>
-    <a href="#nft-gallery">NFT Gallery</a>
-    <a href="#mint">Mint NFT</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <section class="hero">
-    <h2>Where Art Meets Soul</h2>
-  </section>
-  <section class="section" id="about">
-    <h3>About Artboy</h3>
-    <p>Artboy is a collective of creative minds reshaping the way art is experienced in the digital world. Through timeless expression and modern technique, we create experiences that connect, challenge, and captivate.</p>
-  </section>
-  <section class="section" id="projects">
-    <h3>Featured Projects</h3>
-    <p>From digital murals to blockchain-native art pieces, we believe in the power of creativity to transform culture.</p>
-  </section>
-  <section class="section wallet-section">
-    <h3>Connect Your Wallet</h3>
-    <button class="connect-wallet" onclick="connectWallet()">Connect Wallet</button>
-    <div id="wallet-address"></div>
-  </section>
-  <section class="section" id="nft-gallery">
-    <h3>NFT Gallery</h3>
-    <div class="gallery" id="nft-gallery"></div>
-  </section>
-  <section class="section mint-section" id="mint">
-    <h3>Mint Your NFT</h3>
-    <div class="mint-form">
-      <input type="text" id="nft-name" placeholder="NFT Title" />
-      <textarea id="nft-description" placeholder="Description"></textarea>
-      <input type="file" id="nft-image" accept="image/*" />
-      <button class="connect-wallet" onclick="uploadToIPFS()">Mint NFT</button>
-      <div id="mint-result"></div>
-    </div>
-  </section>
-  <section class="section" id="contact">
-    <h3>Connect With Us</h3>
-    <p>Email us at contact@artboy.io or follow us on social media for the latest updates.</p>
-  </section>
-  <footer>
-    &copy; 2025 Artboy Collective. All rights reserved.
-  </footer>
-  <script>
-    async function connectWallet() {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          document.getElementById('wallet-address').innerText = 'Connected: ' + accounts[0];
-        } catch (error) {
-          console.error(error);
-          alert('Connection failed.');
-        }
-      } else {
-        alert('Please install MetaMask to use this feature.');
-      }
-    }
-
-    const sampleNFTs = [
-      { name: "Dream Fragment #1", img src="ChatGPT Image Jun 17, 2025, 06_41_59 AM.png " },
-      { name: "Meta Vision", img src="sigma 22.jpg" },
-      { name: "Code & Canvas",img src="sigma 11.jpg" }
-    ];
-
-    window.onload = () => {
-      const gallery = document.getElementById('nft-gallery');
-      sampleNFTs.forEach(nft => {
-        const card = document.createElement('div');
-        card.className = 'nft-card';
-        card.innerHTML = `<img src="sigma 22.jpg" alt="${nft.name}" /><h4>${nft.name}</h4>`;
-        gallery.appendChild(card);
-      });
-    }
-
-    async function uploadToIPFS() {
-      const name = document.getElementById('nft-name').value;
-      const description = document.getElementById('nft-description').value;
-      const file = document.getElementById('nft-image').files[0];
-
-      if (!name || !description || !file) {
-        alert('Please complete all fields.');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer YOUR_PINATA_JWT"
-        },
-        body: formData
-      });
-
-      const json = await res.json();
-      const fileUrl = `https://gateway.pinata.cloud/ipfs/${json.IpfsHash}`;
-
-      document.getElementById('mint-result').innerHTML = `File uploaded to IPFS: <a href="${fileUrl}" target="_blank">${fileUrl}</a>`;
-    }
-  </script>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">ARTBOY</a>
+                <ul>
+                    <li><a href="index.html" class="active">Beranda</a></li>
+                    <li><a href="galeri.html">Galeri</a></li>
+                    <li><a href="tentang.html">Tentang</a></li>
+                    <li><a href="kontak.html">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="hero container">
+            <div class="hero-text">
+                <h1>Melukis <span class="highlight">Tradisi</span> dalam Kanvas <span class="highlight">Digital</span></h1>
+                <p>Menggabungkan jiwa seni warisan budaya dengan kekuatan teknologi untuk menciptakan karya yang melampaui batas dan zaman.</p>
+                <a href="galeri.html" class="cta-button">Lihat Galeri</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=2070&auto=format&fit=crop" alt="Karya Seni Unggulan">
+            </div>
+        </section>
+        <section id="gallery-preview" class="container">
+            <h2 class="section-title">Karya Unggulan</h2>
+            <div class="gallery-grid">
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop" alt="Judul Karya 1">
+                    <div class="gallery-card-info"><h3>Gadis Penari Bali</h3><p>Eksplorasi digital keanggunan tari Bali.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1578301978018-3005759f48f7?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 2">
+                    <div class="gallery-card-info"><h3>Bayang Wayang</h3><p>Interpretasi modern seni wayang kulit.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1579965342575-5bab2d5d5488?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 3">
+                    <div class="gallery-card-info"><h3>Pola Megamendung</h3><p>Inspirasi dari pola batik Cirebon.</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri | ARTBOY Portofolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
+        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
+        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color:var(--text-color);margin:0;padding:0}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
+        nav{display:flex;justify-content:space-between;align-items:center}
+        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
+        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
+        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
+        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
+        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
+        .hero-text{flex-basis:50%}
+        .hero-image{flex-basis:45%;text-align:right}
+        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
+        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
+        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
+        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
+        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
+        section{padding:100px 0}
+        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
+        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
+        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
+        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
+        .gallery-card-info{padding:1.5rem}
+        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
+        .about-content{display:flex; gap:3rem; align-items:center;}
+        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
+        .about-image img{width:100%; border-radius:10px;}
+        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
+        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
+        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
+        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">ARTBOY</a>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="galeri.html" class="active">Galeri</a></li>
+                    <li><a href="tentang.html">Tentang</a></li>
+                    <li><a href="kontak.html">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="container">
+            <div class="page-header">
+                <h1>Galeri Karya</h1>
+                <p>Inilah koleksi karya yang lahir dari persimpangan antara tradisi dan imajinasi digital. Setiap karya memiliki cerita, setiap piksel memiliki jiwa.</p>
+            </div>
+            <div class="gallery-grid" style="padding-top: 4rem;">
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop" alt="Judul Karya 1">
+                    <div class="gallery-card-info"><h3>Gadis Penari Bali</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1578301978018-3005759f48f7?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 2">
+                    <div class="gallery-card-info"><h3>Bayang Wayang</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1579965342575-5bab2d5d5488?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 3">
+                    <div class="gallery-card-info"><h3>Pola Megamendung</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1533100233990-1e5b55797a25?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 4">
+                    <div class="gallery-card-info"><h3>Topeng Cirebon</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1541892095-2633a1b46322?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 5">
+                    <div class="gallery-card-info"><h3>Borobudur Abstrak</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1563636523928-6d2c4d62b3a0?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 6">
+                    <div class="gallery-card-info"><h3>Roh Hutan Kalimantan</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
+    </footer>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Saya | ARTBOY Portofolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
+        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
+        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color:var(--text-color);margin:0;padding:0}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
+        nav{display:flex;justify-content:space-between;align-items:center}
+        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
+        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
+        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
+        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
+        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
+        .hero-text{flex-basis:50%}
+        .hero-image{flex-basis:45%;text-align:right}
+        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
+        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
+        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
+        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
+        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
+        section{padding:100px 0}
+        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
+        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
+        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
+        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
+        .gallery-card-info{padding:1.5rem}
+        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
+        .about-content{display:flex; gap:3rem; align-items:center;}
+        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
+        .about-image img{width:100%; border-radius:10px;}
+        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
+        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
+        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
+        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">ARTBOY</a>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="galeri.html">Galeri</a></li>
+                    <li><a href="tentang.html" class="active">Tentang</a></li>
+                    <li><a href="kontak.html">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="container">
+            <div class="page-header">
+                <h1>Di Antara Kuas dan Kode</h1>
+                <p>Kisah seorang seniman yang menemukan harmoni antara warisan artistik dan kemungkinan tak terbatas dari dunia digital.</p>
+            </div>
+            <div class="about-content" style="padding-top: 4rem;">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=1974&auto=format&fit=crop" alt="Foto Kelvin Sanjaya">
+                </div>
+                <div class="about-text">
+                    <h2>VISI: Menggabungkan Seni dan Teknologi</h2>
+                    <p>
+                        Saya percaya bahwa seni adalah denyut nadi peradaban, sementara teknologi adalah akseleratornya. Visi saya adalah menjembatani keduanya, menciptakan sebuah dialog di mana kuas tradisional dapat menari bersama algoritma, dan di mana kekayaan budaya dapat diekspresikan kembali melalui medium baru yang inovatif seperti NFT dan seni generatif.
+                    </p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
+    </footer>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontak | ARTBOY Portofolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
+        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
+        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color:var(--text-color);margin:0;padding:0}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
+        nav{display:flex;justify-content:space-between;align-items:center}
+        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
+        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
+        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
+        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
+        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
+        .hero-text{flex-basis:50%}
+        .hero-image{flex-basis:45%;text-align:right}
+        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
+        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
+        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
+        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
+        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
+        section{padding:100px 0}
+        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
+        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
+        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
+        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
+        .gallery-card-info{padding:1.5rem}
+        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
+        .about-content{display:flex; gap:3rem; align-items:center;}
+        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
+        .about-image img{width:100%; border-radius:10px;}
+        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
+        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
+        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
+        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">ARTBOY</a>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="galeri.html">Galeri</a></li>
+                    <li><a href="tentang.html">Tentang</a></li>
+                    <li><a href="kontak.html" class="active">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="container">
+            <div class="page-header">
+                <h1>Hubungi Saya</h1>
+                <p>Terbuka untuk diskusi, kolaborasi, atau sekadar menyapa. Mari terhubung dan ciptakan sesuatu yang baru.</p>
+            </div>
+            <div class="contact-info">
+                <h2>Informasi Kontak</h2>
+                <p><strong>Email:</strong> kelvin.sanjaya.art@email.com</p>
+                <p><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" style="color:var(--primary-color);">@KelvinSanj82713</a></p>
+            </div>
+            <div class="contact-form">
+                <h2>Kirim Pesan</h2>
+                <p><small>Catatan: Formulir ini adalah contoh desain dan belum dapat mengirim email.</small></p>
+                <form>
+                    <input type="text" name="name" placeholder="Nama Anda" required>
+                    <input type="email" name="email" placeholder="Alamat Email Anda" required>
+                    <textarea name="message" rows="6" placeholder="Pesan Anda" required></textarea>
+                    <button type="submit" class="cta-button">Kirim Pesan</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
+    </footer>
 </body>
 </html>
