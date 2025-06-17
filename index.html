@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARTBOY | Portofolio Seniman Kelvin Sanjaya</title>
+    <title>ARTBOY | Nusantara-Futurism Portfolio</title>
     <style>
         /* Mengimpor Font dari Google */
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
-        /* Variabel Warna & Font untuk Desain Konsisten */
+        /* Variabel Warna & Font untuk Desain Nusantara-Futurism */
         :root {
-            --primary-color: #D4AF37; /* Emas (Gold) */
-            --background-color: #2a231e; /* Cokelat Kayu Tua */
-            --card-bg-color: #3e352f;
-            --text-color: #e0dccc; /* Krem Kertas Lontar */
-            --heading-font: 'Lora', serif;
+            --primary-color-gold: #D4AF37; /* Emas Tradisional */
+            --secondary-color-blue: #00d1ff; /* Neon Blue Futuristik */
+            --background-color: #0a0a1a; /* Dark Navy */
+            --card-bg-color: #1a1a2e; /* Darker Blue/Purple */
+            --text-color: #e0e0f0; /* Light Lavender */
+            --heading-font: 'Orbitron', sans-serif;
             --body-font: 'Poppins', sans-serif;
         }
         
-        /* Efek scroll mulus saat klik menu */
         html {
             scroll-behavior: smooth;
         }
@@ -26,7 +26,6 @@
         body {
             font-family: var(--body-font);
             background-color: var(--background-color);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             color: var(--text-color);
             margin: 0;
             padding: 0;
@@ -39,7 +38,7 @@
         }
 
         header {
-            background: rgba(42, 35, 30, 0.8);
+            background: rgba(10, 10, 26, 0.8);
             backdrop-filter: blur(10px);
             padding: 1rem 0;
             border-bottom: 1px solid var(--card-bg-color);
@@ -58,11 +57,19 @@
         .logo {
             font-family: var(--heading-font);
             font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary-color);
+            font-weight: 700;
+            color: var(--primary-color-gold);
             text-decoration: none;
+            text-shadow: 0 0 8px var(--primary-color-gold);
+            z-index: 1001;
         }
 
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+        
         nav ul {
             list-style: none;
             display: flex;
@@ -75,15 +82,34 @@
             color: var(--text-color);
             text-decoration: none;
             font-weight: 400;
-            transition: color .3s ease, border-bottom-color .3s ease;
+            transition: color .3s ease, text-shadow .3s ease;
             padding-bottom: 5px;
-            border-bottom: 2px solid transparent;
         }
 
         nav ul li a:hover,
         nav ul li a.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
+            color: var(--secondary-color-blue);
+            text-shadow: 0 0 8px var(--secondary-color-blue);
+        }
+        
+        .lang-btn {
+            background: var(--card-bg-color);
+            border: 1px solid var(--primary-color-gold);
+            color: var(--primary-color-gold);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: var(--body-font);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .lang-btn:hover {
+            background-color: var(--primary-color-gold);
+            color: var(--background-color);
+        }
+
+        .mobile-nav-toggle {
+            display: none;
         }
 
         section {
@@ -94,61 +120,67 @@
         #beranda {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             min-height: 100vh;
-            padding-top: 80px; /* Header offset */
-            gap: 2rem;
-            border-bottom: none; /* No border for hero section */
+            text-align: center;
+            padding: 80px 20px;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .hero-text {
-            flex-basis: 50%;
+        #beranda::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://lh3.googleusercontent.com/d/1vQ3Y6W1q6n9m8dJ9z_4Cg-mXm_gR3R_d');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            filter: brightness(0.4);
         }
 
-        .hero-image {
-            flex-basis: 45%;
-            text-align: right;
+        .hero-text { 
+            position: relative; 
+            z-index: 2;
         }
         
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 10px;
-            border: 3px solid var(--card-bg-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
         .hero-text h1 {
             font-family: var(--heading-font);
-            font-size: 3.8rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
-        .hero-text h1 .highlight {
-            color: var(--primary-color);
-            font-style: italic;
-        }
-
-        .hero-text p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 500px;
+        .hero-text h1 .highlight-gold { color: var(--primary-color-gold); }
+        .hero-text h1 .highlight-blue { color: var(--secondary-color-blue); }
+        .hero-text p { 
+            font-size: 1.1rem; 
+            margin-bottom: 2rem; 
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .cta-button {
-            background: transparent;
-            color: var(--primary-color);
+            background: var(--secondary-color-blue);
+            color: var(--background-color);
             padding: 12px 30px;
             border-radius: 5px;
-            border: 2px solid var(--primary-color);
+            border: 2px solid var(--secondary-color-blue);
             text-decoration: none;
             font-weight: 600;
             transition: all .3s ease;
+            box-shadow: 0 0 10px rgba(0, 209, 255, 0.5);
         }
 
         .cta-button:hover {
-            background: var(--primary-color);
-            color: var(--background-color);
+            background: transparent;
+            color: var(--secondary-color-blue);
+            box-shadow: 0 0 20px var(--secondary-color-blue);
         }
         
         .section-title {
@@ -156,8 +188,8 @@
             font-family: var(--heading-font);
             font-size: 2.8rem;
             margin-bottom: 1rem;
-            font-weight: 600;
-            color: var(--primary-color);
+            font-weight: 700;
+            color: var(--primary-color-gold);
         }
         
         .section-subtitle {
@@ -177,72 +209,157 @@
             background-color: var(--card-bg-color);
             border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #4a413a;
-            transition: transform .3s ease,box-shadow .3s ease;
+            border: 1px solid #2a2a3f;
+            transition: transform .3s ease,box-shadow .3s ease, border-color .3s ease;
         }
         
         .gallery-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            border-color: var(--primary-color-gold);
         }
         
-        .gallery-card img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .gallery-card-info {
-            padding: 1.5rem;
-        }
-        
-        .gallery-card-info h3 {
-            margin-top: 0;
-            font-family: var(--heading-font);
-        }
+        .gallery-card img { width: 100%; height: 300px; object-fit: cover; display: block; }
+        .gallery-card-info { padding: 1.5rem; }
+        .gallery-card-info h3 { margin-top: 0; font-family: var(--heading-font); color: var(--primary-color-gold);}
 
-        .about-content {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
-        }
-
+        .about-content { display: flex; gap: 3rem; align-items: center; }
         .about-text { flex-basis: 60%; }
         .about-image { flex-basis: 40%; }
         .about-image img { width: 100%; border-radius: 10px; }
 
-        .contact-info,
-        .contact-form {
+        .contact-info, .contact-form {
             background-color: var(--card-bg-color);
             padding: 2rem;
             border-radius: 8px;
             margin-top: 2rem;
+            border: 1px solid #2a2a3f;
         }
         
         form input, form textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 1rem;
             border-radius: 5px;
-            border: 1px solid #555;
-            background-color: #333;
+            border: 1px solid #2a2a3f;
+            background-color: #0a0a1a;
             color: var(--text-color);
             box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        form input:focus, form textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color-blue);
         }
 
         footer {
-            background: var(--card-bg-color);
+            background: #000;
             text-align: center;
             padding: 2rem 0;
             margin-top: 60px;
+            border-top: 1px solid var(--card-bg-color);
         }
         
+        .coin-address {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #2a2a3f;
+        }
+        
+        .address-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background-color: var(--background-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            max-width: 90%;
+            margin: 0.5rem auto 0 auto;
+            border: 1px solid var(--card-bg-color);
+        }
+
+        #coinAddress { font-family: monospace; word-break: break-all; }
+
+        .copy-btn {
+            background: var(--primary-color-gold);
+            color: var(--background-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover { opacity: 0.9; }
+        
         @media (max-width: 768px) {
-            #beranda { flex-direction: column; text-align: center; padding-top: 120px; }
-            .hero-text p { margin: 0 auto 2rem auto; }
-            nav ul { display: none; }
-            .about-content { flex-direction: column; }
+            #beranda { text-align: center; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .nav-items {
+                position: fixed;
+                inset: 0 0 0 30%; /* menu dari kanan, 70% lebar */
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 3rem;
+                background: rgba(10, 10, 26, 0.95);
+                backdrop-filter: blur(10px);
+                transform: translateX(100%);
+                transition: transform 350ms ease-out;
+            }
+
+            .nav-items.nav-open {
+                transform: translateX(0);
+            }
+            
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+                position: absolute;
+                top: 1.5rem;
+                right: 2rem;
+                width: 30px;
+                height: 25px;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                z-index: 1001;
+            }
+
+            .mobile-nav-toggle span {
+                display: block;
+                position: absolute;
+                height: 3px;
+                width: 100%;
+                background: var(--text-color);
+                border-radius: 3px;
+                opacity: 1;
+                left: 0;
+                transform: rotate(0deg);
+                transition: .25s ease-in-out;
+            }
+            .mobile-nav-toggle span:nth-child(1) { top: 0px; }
+            .mobile-nav-toggle span:nth-child(2) { top: 10px; }
+            .mobile-nav-toggle span:nth-child(3) { top: 20px; }
+
+            .mobile-nav-toggle[aria-expanded="true"] span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .mobile-nav-toggle[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .mobile-nav-toggle[aria-expanded="true"] span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
         }
     </style>
 </head>
@@ -252,126 +369,248 @@
         <div class="container">
             <nav>
                 <a href="#beranda" class="logo">ARTBOY</a>
-                <ul>
-                    <li><a href="#beranda">Beranda</a></li>
-                    <li><a href="#galeri">Galeri</a></li>
-                    <li><a href="#tentang">Tentang</a></li>
-                    <li><a href="#kontak">Kontak</a></li>
-                </ul>
+                <button class="mobile-nav-toggle" aria-controls="main-nav" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-items" id="main-nav">
+                    <ul>
+                        <li><a href="#beranda" data-lang="nav_home">Beranda</a></li>
+                        <li><a href="#galeri" data-lang="nav_gallery">Galeri</a></li>
+                        <li><a href="#tentang" data-lang="nav_about">Tentang</a></li>
+                        <li><a href="#kontak" data-lang="nav_contact">Kontak</a></li>
+                    </ul>
+                    <button id="lang-toggle" class="lang-btn">EN</button>
+                </div>
             </nav>
         </div>
     </header>
 
     <main>
+        <!-- ======================= BAGIAN BERANDA ======================= -->
         <section id="beranda" class="container">
             <div class="hero-text">
-                <h1>Melukis <span class="highlight">Tradisi</span> dalam Kanvas <span class="highlight">Digital</span></h1>
-                <p>Menggabungkan jiwa seni warisan budaya dengan kekuatan teknologi untuk menciptakan karya yang melampaui batas dan zaman.</p>
-                <a href="#galeri" class="cta-button">Lihat Galeri</a>
-            </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=2070&auto=format&fit=crop" alt="Karya Seni Unggulan">
+                <h1 data-lang="hero_title">Merajut Warisan <span class="highlight-gold">Nusantara</span> dengan <span class="highlight-blue">AI</span> & Kriptografi</h1>
+                <p data-lang="hero_subtitle">Sebuah eksplorasi artistik di mana kearifan lokal dan estetika Nusantara lahir kembali melalui kecerdasan buatan dan diabadikan dalam keamanan Kriptografi.</p>
+                <a href="#galeri" class="cta-button" data-lang="hero_cta">Jelajahi Karya</a>
             </div>
         </section>
 
+        <!-- ======================= BAGIAN GALERI ======================= -->
         <section id="galeri" class="container">
-            <h2 class="section-title">Galeri Karya</h2>
-            <p class="section-subtitle">Inilah koleksi karya yang lahir dari persimpangan antara tradisi dan imajinasi digital. Setiap karya memiliki cerita, setiap piksel memiliki jiwa.</p>
+            <h2 class="section-title" data-lang="gallery_title">Galeri Karya</h2>
+            <p class="section-subtitle" data-lang="gallery_subtitle">Setiap karya adalah dialog antara masa lalu dan masa depan, di mana jiwa tradisi dibungkus dalam sirkuit digital dan diamankan di atas blockchain.</p>
             <div class="gallery-grid">
+                <!-- KARTU 1 (REVISI) -->
                 <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop" alt="Judul Karya 1">
-                    <div class="gallery-card-info"><h3>Gadis Penari Bali</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                    <img src="https://lh3.googleusercontent.com/d/1xG0tL3d_P4b-x6K_8pW4j-yP_yHw_gX1" alt="Bullboy smile">
+                    <div class="gallery-card-info"><h3>Bullboy smile</h3><p data-lang="gallery_1_desc">Senyum ketika mendapatkan profit.</p></div>
                 </div>
+                <!-- KARTU 2 (REVISI) -->
                 <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1578301978018-3005759f48f7?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 2">
-                    <div class="gallery-card-info"><h3>Bayang Wayang</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                    <img src="https://lh3.googleusercontent.com/d/1aJ2o3e_pG_n_vF-n7x_rA_xV_f5gQ3R7" alt="Rugboy sad">
+                    <div class="gallery-card-info"><h3>Rugboy sad</h3><p data-lang="gallery_2_desc">Sedih ketika di rugpull.</p></div>
                 </div>
+                <!-- KARTU 3 (REVISI) -->
                 <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1579965342575-5bab2d5d5488?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 3">
-                    <div class="gallery-card-info"><h3>Pola Megamendung</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                    <img src="https://lh3.googleusercontent.com/d/1kS_5tW2p_y_n4dK_j_b_fX_yE_bF_8eQ" alt="Confused boy">
+                    <div class="gallery-card-info"><h3>Confused boy</h3><p data-lang="gallery_3_desc">Bingung trading lagi atau tidak.</p></div>
                 </div>
+                 <!-- KARTU 4 (REVISI) -->
                 <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1533100233990-1e5b55797a25?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 4">
-                    <div class="gallery-card-info"><h3>Topeng Cirebon</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1541892095-2633a1b46322?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 5">
-                    <div class="gallery-card-info"><h3>Borobudur Abstrak</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1563636523928-6d2c4d62b3a0?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 6">
-                    <div class="gallery-card-info"><h3>Roh Hutan Kalimantan</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
+                    <img src="https://lh3.googleusercontent.com/d/1xX_z_j-m_t_sR_yE_vL_mB_x_gX_vR_c" alt="Depression boy">
+                    <div class="gallery-card-info">
+                        <h3>Depression boy</h3>
+                        <p data-lang="gallery_4_desc">Depresi dan serakah antara take profit atau kena liquidasi.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- ======================= BAGIAN TENTANG ======================= -->
         <section id="tentang" class="container">
-            <h2 class="section-title">Tentang Saya</h2>
+            <h2 class="section-title" data-lang="about_title">Tentang Saya</h2>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=1974&auto=format&fit=crop" alt="Foto Kelvin Sanjaya">
+                    <img src="https://lh3.googleusercontent.com/d/1u-e2w0o6p_r-F3i2o5n_I_sR_r_p_2bE" alt="Foto Kelvin Sanjaya">
                 </div>
                 <div class="about-text">
-                    <h3>VISI: Di Antara Kuas dan Kode</h3>
-                    <p>
-                        Saya percaya bahwa seni adalah denyut nadi peradaban, sementara teknologi adalah akseleratornya. Visi saya adalah menjembatani keduanya, menciptakan sebuah dialog di mana kuas tradisional dapat menari bersama algoritma, dan di mana kekayaan budaya dapat diekspresikan kembali melalui medium baru yang inovatif seperti NFT dan seni generatif.
-                    </p>
-                    <p>
-                        Perjalanan saya dimulai dari kecintaan pada sketsa pensil dan kanvas, terinspirasi oleh kekayaan visual Indonesia. Seiring waktu, ketertarikan pada dunia digital membawa saya untuk mengeksplorasi bagaimana kedua dunia ini dapat bersatu, bukan untuk menggantikan, tetapi untuk saling melengkapi dan menciptakan bentuk ekspresi yang belum pernah ada sebelumnya.
-                    </p>
+                    <h3 data-lang="about_vision_title">VISI: Digitalisasi Warisan Budaya</h3>
+                    <p data-lang="about_vision_p1">Saya adalah seorang seniman dan teknolog yang bersemangat untuk melestarikan dan mengembangkan kekayaan budaya Nusantara. Misi saya adalah menggunakan teknologi mutakhir—seperti AI dan Kriptografi—sebagai jembatan antara masa lalu dan masa depan.</p>
+                    <p data-lang="about_vision_p2">Saya melatih model AI untuk mempelajari filosofi dan estetika seni tradisional Indonesia. Hasilnya bukan sekadar replika, melainkan interpretasi baru yang segar. Setiap karya kemudian diabadikan sebagai aset digital unik di blockchain, memastikan warisan ini tidak hanya bertahan, tetapi juga berevolusi.</p>
                 </div>
             </div>
         </section>
 
+        <!-- ======================= BAGIAN KONTAK ======================= -->
         <section id="kontak" class="container">
-            <h2 class="section-title">Hubungi Saya</h2>
-            <p class="section-subtitle">Terbuka untuk diskusi, kolaborasi, atau sekadar menyapa. Mari terhubung dan ciptakan sesuatu yang baru.</p>
+            <h2 class="section-title" data-lang="contact_title">Hubungi Saya</h2>
+            <p class="section-subtitle" data-lang="contact_subtitle">Terbuka untuk kolaborasi, proyek komisi, atau diskusi tentang masa depan seni dan teknologi.</p>
             <div class="contact-info">
-                <h3>Informasi Kontak</h3>
-                <p><strong>Email:</strong> kelvin.sanjaya.art@email.com</p>
-                <p><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" style="color:var(--primary-color);">@KelvinSanj82713</a></p>
-            </div>
-            <div class="contact-form">
-                <h3>Kirim Pesan</h3>
-                <p><small>Catatan: Formulir ini adalah contoh desain dan belum dapat mengirim email.</small></p>
-                <form>
-                    <input type="text" name="name" placeholder="Nama Anda" required>
-                    <input type="email" name="email" placeholder="Alamat Email Anda" required>
-                    <textarea name="message" rows="6" placeholder="Pesan Anda" required></textarea>
-                    <button type="submit" class="cta-button">Kirim Pesan</button>
-                </form>
+                <h3 data-lang="contact_info_title">Informasi Kontak</h3>
+                <p><strong>Email:</strong> keljayaaa@gmail.com</p>
+                <p><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" style="color:var(--secondary-color-blue);">@KelvinSanj82713</a></p>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p>
+            <p data-lang="footer_copyright">&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.</p>
+            <div class="coin-address">
+                <p data-lang="footer_support"><strong>Dukung karya saya melalui (SOL):</strong></p>
+                <div class="address-box">
+                    <span id="coinAddress">FqiUwa6b5vmDTL1bDxBSCfEAiWqVrAJP9rJ57Apxpump</span>
+                    <button id="copyButton" class="copy-btn" data-lang="copy_btn">Salin</button>
+                </div>
+            </div>
         </div>
     </footer>
 
+    <!-- JavaScript untuk fungsionalitas website -->
     <script>
+        // --- Kamus Terjemahan ---
+        const translations = {
+            en: {
+                nav_home: "Home",
+                nav_gallery: "Gallery",
+                nav_about: "About",
+                nav_contact: "Contact",
+                hero_title: 'Weaving <span class="highlight-gold">Nusantara</span> Heritage with <span class="highlight-blue">AI</span> & Cryptography',
+                hero_subtitle: "An artistic exploration where local wisdom and Nusantara aesthetics are reborn through artificial intelligence and immortalized in the security of Cryptography.",
+                hero_cta: "Explore Works",
+                gallery_title: "Gallery",
+                gallery_subtitle: "Each work is a dialogue between the past and the future, where the soul of tradition is wrapped in digital circuits and secured on the blockchain.",
+                gallery_1_desc: "The smile when making a profit.",
+                gallery_2_desc: "The sadness when getting rugpulled.",
+                gallery_3_desc: "Confused whether to trade again or not.",
+                gallery_4_desc: "Depression and greed between taking profit or getting liquidated.",
+                about_title: "About Me",
+                about_vision_title: "VISION: Digitizing Cultural Heritage",
+                about_vision_p1: "I am an artist and technologist passionate about preserving and developing the cultural richness of Nusantara. My mission is to use cutting-edge technology—such as AI and Cryptography—as a bridge between the past and the future.",
+                about_vision_p2: "I train AI models to learn the philosophy and aesthetics of traditional Indonesian art. The result is not just a replica, but a fresh, new interpretation. Each piece is then immortalized as a unique digital asset on the blockchain, ensuring this heritage not only endures, but also evolves.",
+                contact_title: "Contact Me",
+                contact_subtitle: "Open for collaborations, commission projects, or discussions about the future of art and technology.",
+                contact_info_title: "Contact Information",
+                footer_copyright: "&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.",
+                footer_support: "<strong>Support my work via (SOL):</strong>",
+                copy_btn: "Copy",
+                copied_btn: "Copied!",
+                copy_fail_btn: "Failed"
+            },
+            id: {
+                nav_home: "Beranda",
+                nav_gallery: "Galeri",
+                nav_about: "Tentang",
+                nav_contact: "Kontak",
+                hero_title: 'Merajut Warisan <span class="highlight-gold">Nusantara</span> dengan <span class="highlight-blue">AI</span> & Kriptografi',
+                hero_subtitle: "Sebuah eksplorasi artistik di mana kearifan lokal dan estetika Nusantara lahir kembali melalui kecerdasan buatan dan diabadikan dalam keamanan Kriptografi.",
+                hero_cta: "Jelajahi Karya",
+                gallery_title: "Galeri Karya",
+                gallery_subtitle: "Setiap karya adalah dialog antara masa lalu dan masa depan, di mana jiwa tradisi dibungkus dalam sirkuit digital dan diamankan di atas blockchain.",
+                gallery_1_desc: "Senyum ketika mendapatkan profit.",
+                gallery_2_desc: "Sedih ketika di rugpull.",
+                gallery_3_desc: "Bingung trading lagi atau tidak.",
+                gallery_4_desc: "Depresi dan serakah antara take profit atau kena liquidasi.",
+                about_title: "Tentang Saya",
+                about_vision_title: "VISI: Digitalisasi Warisan Budaya",
+                about_vision_p1: "Saya adalah seorang seniman dan teknolog yang bersemangat untuk melestarikan dan mengembangkan kekayaan budaya Nusantara. Misi saya adalah menggunakan teknologi mutakhir—seperti AI dan Kriptografi—sebagai jembatan antara masa lalu dan masa depan.",
+                about_vision_p2: "Saya melatih model AI untuk mempelajari filosofi dan estetika seni tradisional Indonesia. Hasilnya bukan sekadar replika, melainkan interpretasi baru yang segar. Setiap karya kemudian diabadikan sebagai aset digital unik di blockchain, memastikan warisan ini tidak hanya bertahan, tetapi juga berevolusi.",
+                contact_title: "Hubungi Saya",
+                contact_subtitle: "Terbuka untuk kolaborasi, proyek komisi, atau diskusi tentang masa depan seni dan teknologi.",
+                contact_info_title: "Informasi Kontak",
+                footer_copyright: "&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.",
+                footer_support: "<strong>Dukung karya saya melalui (SOL):</strong>",
+                copy_btn: "Salin",
+                copied_btn: "Disalin!",
+                copy_fail_btn: "Gagal"
+            }
+        };
+
+        // --- Script untuk Terjemahan ---
+        const langToggleButton = document.getElementById('lang-toggle');
+        let currentLang = 'id';
+
+        if (langToggleButton) {
+            langToggleButton.addEventListener('click', () => {
+                currentLang = currentLang === 'id' ? 'en' : 'id';
+                langToggleButton.innerText = currentLang === 'id' ? 'EN' : 'ID';
+                
+                document.querySelectorAll('[data-lang]').forEach(element => {
+                    const key = element.getAttribute('data-lang');
+                    if (translations[currentLang][key]) {
+                        element.innerHTML = translations[currentLang][key];
+                    }
+                });
+            });
+        }
+
+        // --- Script untuk menandai menu aktif saat scroll ---
         const sections = document.querySelectorAll('section');
         const navLi = document.querySelectorAll('nav ul li a');
-
         window.addEventListener('scroll', () => {
-            let current = '';
+            let current = 'beranda';
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                if (pageYOffset >= sectionTop - 65) {
                     current = section.getAttribute('id');
                 }
             });
 
             navLi.forEach(a => {
                 a.classList.remove('active');
-                if (a.getAttribute('href').substring(1) === current) {
+                const href = a.getAttribute('href');
+                if (href && href.substring(1) === current) {
                     a.classList.add('active');
                 }
             });
         });
-    </script>
 
+        // --- Script untuk tombol salin alamat koin ---
+        const copyButton = document.getElementById('copyButton');
+        const coinAddressText = document.getElementById('coinAddress').innerText;
+
+        copyButton.addEventListener('click', () => {
+            const textArea = document.createElement('textarea');
+            textArea.value = coinAddressText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                copyButton.innerText = translations[currentLang].copied_btn;
+                setTimeout(() => { 
+                    copyButton.innerText = translations[currentLang].copy_btn; 
+                }, 2000);
+            } catch (err) {
+                console.error('Gagal menyalin alamat:', err);
+                copyButton.innerText = translations[currentLang].copy_fail_btn;
+            }
+            document.body.removeChild(textArea);
+        });
+
+        // --- Script untuk Mobile Navigation (Hamburger Menu) ---
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const mainNav = document.getElementById('main-nav');
+        
+        if(mobileNavToggle && mainNav){
+            const navLinks = mainNav.querySelectorAll('a');
+
+            mobileNavToggle.addEventListener('click', () => {
+                const isNavOpen = mainNav.classList.toggle('nav-open');
+                mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
+            });
+
+            // Tutup menu saat link di-klik
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mainNav.classList.contains('nav-open')) {
+                        mainNav.classList.remove('nav-open');
+                        mobileNavToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
