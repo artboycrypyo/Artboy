@@ -3,161 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARTBOY | Portofolio Seniman</title>
+    <title>ARTBOY | Portofolio Seniman Kelvin Sanjaya</title>
     <style>
+        /* Mengimpor Font dari Google */
         @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
-        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
-        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color:var(--text-color);margin:0;padding:0}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px}
-        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
-        nav{display:flex;justify-content:space-between;align-items:center}
-        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
-        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
-        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
-        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
-        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
-        .hero-text{flex-basis:50%}
-        .hero-image{flex-basis:45%;text-align:right}
-        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
-        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
-        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
-        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
-        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
-        section{padding:100px 0}
-        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; align-items:center; justify-content:center;}
-        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
-        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
-        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
-        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
-        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
-        .gallery-card-info{padding:1.5rem}
-        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
-        .about-content{display:flex; gap:3rem; align-items:center;}
-        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
-        .about-image img{width:100%; border-radius:10px;}
-        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
-        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
-        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
-        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
+
+        /* Variabel Warna & Font untuk Desain Konsisten */
+        :root {
+            --primary-color: #D4AF37; /* Emas (Gold) */
+            --background-color: #2a231e; /* Cokelat Kayu Tua */
+            --card-bg-color: #3e352f;
+            --text-color: #e0dccc; /* Krem Kertas Lontar */
+            --heading-font: 'Lora', serif;
+            --body-font: 'Poppins', sans-serif;
+        }
+        
+        /* Efek scroll mulus saat klik menu */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background-color: var(--background-color);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(42, 35, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--card-bg-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--heading-font);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color .3s ease, border-bottom-color .3s ease;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        section {
+            padding: 120px 0;
+            border-bottom: 1px solid var(--card-bg-color);
+        }
+
+        #beranda {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            padding-top: 80px; /* Header offset */
+            gap: 2rem;
+            border-bottom: none; /* No border for hero section */
+        }
+
+        .hero-text {
+            flex-basis: 50%;
+        }
+
+        .hero-image {
+            flex-basis: 45%;
+            text-align: right;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            border: 3px solid var(--card-bg-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero-text h1 {
+            font-family: var(--heading-font);
+            font-size: 3.8rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-text h1 .highlight {
+            color: var(--primary-color);
+            font-style: italic;
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+        
+        .cta-button {
+            background: transparent;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 5px;
+            border: 2px solid var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all .3s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-color);
+            color: var(--background-color);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-family: var(--heading-font);
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem auto;
+            font-size: 1.1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+            gap: 2rem;
+        }
+        
+        .gallery-card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #4a413a;
+            transition: transform .3s ease,box-shadow .3s ease;
+        }
+        
+        .gallery-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        
+        .gallery-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-card-info {
+            padding: 1.5rem;
+        }
+        
+        .gallery-card-info h3 {
+            margin-top: 0;
+            font-family: var(--heading-font);
+        }
+
+        .about-content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text { flex-basis: 60%; }
+        .about-image { flex-basis: 40%; }
+        .about-image img { width: 100%; border-radius: 10px; }
+
+        .contact-info,
+        .contact-form {
+            background-color: var(--card-bg-color);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+
+        footer {
+            background: var(--card-bg-color);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            #beranda { flex-direction: column; text-align: center; padding-top: 120px; }
+            .hero-text p { margin: 0 auto 2rem auto; }
+            nav ul { display: none; }
+            .about-content { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
+
     <header>
         <div class="container">
             <nav>
-                <a href="index.html" class="logo">ARTBOY</a>
+                <a href="#beranda" class="logo">ARTBOY</a>
                 <ul>
-                    <li><a href="index.html" class="active">Beranda</a></li>
-                    <li><a href="galeri.html">Galeri</a></li>
-                    <li><a href="tentang.html">Tentang</a></li>
-                    <li><a href="kontak.html">Kontak</a></li>
+                    <li><a href="#beranda">Beranda</a></li>
+                    <li><a href="#galeri">Galeri</a></li>
+                    <li><a href="#tentang">Tentang</a></li>
+                    <li><a href="#kontak">Kontak</a></li>
                 </ul>
             </nav>
         </div>
     </header>
+
     <main>
-        <section class="hero container">
+        <section id="beranda" class="container">
             <div class="hero-text">
                 <h1>Melukis <span class="highlight">Tradisi</span> dalam Kanvas <span class="highlight">Digital</span></h1>
                 <p>Menggabungkan jiwa seni warisan budaya dengan kekuatan teknologi untuk menciptakan karya yang melampaui batas dan zaman.</p>
-                <a href="galeri.html" class="cta-button">Lihat Galeri</a>
+                <a href="#galeri" class="cta-button">Lihat Galeri</a>
             </div>
             <div class="hero-image">
                 <img src="https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=2070&auto=format&fit=crop" alt="Karya Seni Unggulan">
             </div>
         </section>
-        <section id="gallery-preview" class="container">
-            <h2 class="section-title">Karya Unggulan</h2>
+
+        <section id="galeri" class="container">
+            <h2 class="section-title">Galeri Karya</h2>
+            <p class="section-subtitle">Inilah koleksi karya yang lahir dari persimpangan antara tradisi dan imajinasi digital. Setiap karya memiliki cerita, setiap piksel memiliki jiwa.</p>
             <div class="gallery-grid">
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop" alt="Judul Karya 1">
-                    <div class="gallery-card-info"><h3>Gadis Penari Bali</h3><p>Eksplorasi digital keanggunan tari Bali.</p></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1578301978018-3005759f48f7?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 2">
-                    <div class="gallery-card-info"><h3>Bayang Wayang</h3><p>Interpretasi modern seni wayang kulit.</p></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1579965342575-5bab2d5d5488?q=80&w=1887&auto=format&fit=crop" alt="Judul Karya 3">
-                    <div class="gallery-card-info"><h3>Pola Megamendung</h3><p>Inspirasi dari pola batik Cirebon.</p></div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer>
-        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
-    </footer>
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeri | ARTBOY Portofolio</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
-        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
-        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color:var(--text-color);margin:0;padding:0}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px}
-        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
-        nav{display:flex;justify-content:space-between;align-items:center}
-        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
-        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
-        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
-        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
-        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
-        .hero-text{flex-basis:50%}
-        .hero-image{flex-basis:45%;text-align:right}
-        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
-        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
-        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
-        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
-        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
-        section{padding:100px 0}
-        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
-        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
-        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
-        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
-        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
-        .gallery-card-info{padding:1.5rem}
-        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
-        .about-content{display:flex; gap:3rem; align-items:center;}
-        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
-        .about-image img{width:100%; border-radius:10px;}
-        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
-        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
-        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
-        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <nav>
-                <a href="index.html" class="logo">ARTBOY</a>
-                <ul>
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="galeri.html" class="active">Galeri</a></li>
-                    <li><a href="tentang.html">Tentang</a></li>
-                    <li><a href="kontak.html">Kontak</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <section class="container">
-            <div class="page-header">
-                <h1>Galeri Karya</h1>
-                <p>Inilah koleksi karya yang lahir dari persimpangan antara tradisi dan imajinasi digital. Setiap karya memiliki cerita, setiap piksel memiliki jiwa.</p>
-            </div>
-            <div class="gallery-grid" style="padding-top: 4rem;">
                 <div class="gallery-card">
                     <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop" alt="Judul Karya 1">
                     <div class="gallery-card-info"><h3>Gadis Penari Bali</h3><p>Deskripsi singkat karya seni Anda di sini.</p></div>
@@ -184,172 +304,35 @@
                 </div>
             </div>
         </section>
-    </main>
-    <footer>
-        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
-    </footer>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang Saya | ARTBOY Portofolio</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
-        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
-        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color:var(--text-color);margin:0;padding:0}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px}
-        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
-        nav{display:flex;justify-content:space-between;align-items:center}
-        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
-        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
-        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
-        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
-        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
-        .hero-text{flex-basis:50%}
-        .hero-image{flex-basis:45%;text-align:right}
-        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
-        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
-        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
-        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
-        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
-        section{padding:100px 0}
-        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
-        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
-        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
-        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
-        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
-        .gallery-card-info{padding:1.5rem}
-        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
-        .about-content{display:flex; gap:3rem; align-items:center;}
-        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
-        .about-image img{width:100%; border-radius:10px;}
-        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
-        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
-        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
-        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <nav>
-                <a href="index.html" class="logo">ARTBOY</a>
-                <ul>
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="galeri.html">Galeri</a></li>
-                    <li><a href="tentang.html" class="active">Tentang</a></li>
-                    <li><a href="kontak.html">Kontak</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <section class="container">
-            <div class="page-header">
-                <h1>Di Antara Kuas dan Kode</h1>
-                <p>Kisah seorang seniman yang menemukan harmoni antara warisan artistik dan kemungkinan tak terbatas dari dunia digital.</p>
-            </div>
-            <div class="about-content" style="padding-top: 4rem;">
+
+        <section id="tentang" class="container">
+            <h2 class="section-title">Tentang Saya</h2>
+            <div class="about-content">
                 <div class="about-image">
                     <img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=1974&auto=format&fit=crop" alt="Foto Kelvin Sanjaya">
                 </div>
                 <div class="about-text">
-                    <h2>VISI: Menggabungkan Seni dan Teknologi</h2>
+                    <h3>VISI: Di Antara Kuas dan Kode</h3>
                     <p>
                         Saya percaya bahwa seni adalah denyut nadi peradaban, sementara teknologi adalah akseleratornya. Visi saya adalah menjembatani keduanya, menciptakan sebuah dialog di mana kuas tradisional dapat menari bersama algoritma, dan di mana kekayaan budaya dapat diekspresikan kembali melalui medium baru yang inovatif seperti NFT dan seni generatif.
                     </p>
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        Perjalanan saya dimulai dari kecintaan pada sketsa pensil dan kanvas, terinspirasi oleh kekayaan visual Indonesia. Seiring waktu, ketertarikan pada dunia digital membawa saya untuk mengeksplorasi bagaimana kedua dunia ini dapat bersatu, bukan untuk menggantikan, tetapi untuk saling melengkapi dan menciptakan bentuk ekspresi yang belum pernah ada sebelumnya.
                     </p>
                 </div>
             </div>
         </section>
-    </main>
-    <footer>
-        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
-    </footer>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontak | ARTBOY Portofolio</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;400;600&display=swap');
-        :root{--primary-color:#D4AF37;--background-color:#2a231e;--card-bg-color:#3e352f;--text-color:#e0dccc;--heading-font:'Lora',serif;--body-font:'Poppins',sans-serif;}
-        body{font-family:var(--body-font);background-color:var(--background-color);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0v-1h4v-9H0V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h9V0h1v4h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6v-1h4v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        color:var(--text-color);margin:0;padding:0}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px}
-        header{background:rgba(42,35,30,0.7);backdrop-filter:blur(10px);padding:1rem 0;border-bottom:1px solid var(--card-bg-color);position:fixed;width:100%;top:0;z-index:1000}
-        nav{display:flex;justify-content:space-between;align-items:center}
-        .logo{font-family:var(--heading-font);font-size:1.8rem;font-weight:600;color:var(--primary-color);text-decoration:none}
-        nav ul{list-style:none;display:flex;gap:2.5rem;margin:0;padding:0;}
-        nav ul li a{color:var(--text-color);text-decoration:none;font-weight:400;transition:color .3s ease;padding-bottom:5px;}
-        nav ul li a:hover, nav ul li a.active{color:var(--primary-color);border-bottom:2px solid var(--primary-color);}
-        .hero{display:flex;align-items:center;justify-content:space-between;min-height:100vh;padding-top:80px;gap:2rem}
-        .hero-text{flex-basis:50%}
-        .hero-image{flex-basis:45%;text-align:right}
-        .hero-image img{max-width:100%;border-radius:10px;border:3px solid var(--card-bg-color);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-        .hero h1{font-family:var(--heading-font);font-size:3.8rem;margin-bottom:1rem;line-height:1.2}
-        .hero h1 .highlight{color:var(--primary-color);font-style:italic}
-        .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:500px}
-        .cta-button{background:transparent;color:var(--primary-color);padding:12px 30px;border-radius:5px;border:2px solid var(--primary-color);text-decoration:none;font-weight:600;transition:all .3s ease}
-        .cta-button:hover{background:var(--primary-color);color:var(--background-color)}
-        section{padding:100px 0}
-        .page-header{padding-top:120px; text-align:center; min-height:30vh; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-        .section-title, .page-header h1{text-align:center;font-family:var(--heading-font);font-size:2.8rem;margin-bottom:1rem;font-weight:600;color:var(--primary-color)}
-        .page-header p {max-width:700px; margin: 0 auto; font-size:1.1rem;}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
-        .gallery-card{background-color:var(--card-bg-color);border-radius:8px;overflow:hidden;border:1px solid #4a413a;transition:transform .3s ease,box-shadow .3s ease}
-        .gallery-card:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,0.4)}
-        .gallery-card img{width:100%;height:250px;object-fit:cover;display:block}
-        .gallery-card-info{padding:1.5rem}
-        .gallery-card-info h3{margin-top:0;font-family:var(--heading-font)}
-        .about-content{display:flex; gap:3rem; align-items:center;}
-        .about-text{flex-basis:60%;} .about-image{flex-basis:40%;}
-        .about-image img{width:100%; border-radius:10px;}
-        .contact-info, .contact-form{background-color:var(--card-bg-color);padding:2rem;border-radius:8px;margin-top:2rem;}
-        form input,form textarea{width:100%;padding:10px;margin-bottom:1rem;border-radius:5px;border:1px solid #555;background-color:#333;color:var(--text-color);}
-        footer{background:var(--card-bg-color);text-align:center;padding:2rem 0;margin-top:60px;}
-        @media (max-width:768px){.hero{flex-direction:column;text-align:center;padding-top:120px;}.hero p{margin:0 auto 2rem auto;}nav ul{display:none;}.about-content{flex-direction:column;}}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <nav>
-                <a href="index.html" class="logo">ARTBOY</a>
-                <ul>
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="galeri.html">Galeri</a></li>
-                    <li><a href="tentang.html">Tentang</a></li>
-                    <li><a href="kontak.html" class="active">Kontak</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <section class="container">
-            <div class="page-header">
-                <h1>Hubungi Saya</h1>
-                <p>Terbuka untuk diskusi, kolaborasi, atau sekadar menyapa. Mari terhubung dan ciptakan sesuatu yang baru.</p>
-            </div>
+
+        <section id="kontak" class="container">
+            <h2 class="section-title">Hubungi Saya</h2>
+            <p class="section-subtitle">Terbuka untuk diskusi, kolaborasi, atau sekadar menyapa. Mari terhubung dan ciptakan sesuatu yang baru.</p>
             <div class="contact-info">
-                <h2>Informasi Kontak</h2>
+                <h3>Informasi Kontak</h3>
                 <p><strong>Email:</strong> kelvin.sanjaya.art@email.com</p>
                 <p><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" style="color:var(--primary-color);">@KelvinSanj82713</a></p>
             </div>
             <div class="contact-form">
-                <h2>Kirim Pesan</h2>
+                <h3>Kirim Pesan</h3>
                 <p><small>Catatan: Formulir ini adalah contoh desain dan belum dapat mengirim email.</small></p>
                 <form>
                     <input type="text" name="name" placeholder="Nama Anda" required>
@@ -360,8 +343,35 @@
             </div>
         </section>
     </main>
+
     <footer>
-        <div class="container"><p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p></div>
+        <div class="container">
+            <p>&copy; 2025 Kelvin Sanjaya (ARTBOY). Hak Cipta Dilindungi.</p>
+        </div>
     </footer>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const navLi = document.querySelectorAll('nav ul li a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLi.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').substring(1) === current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
