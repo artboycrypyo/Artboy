@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARTBOY | Nusantara-Futurism Portfolio</title>
+    <title>ARTBOY | Nusantara Luxury Portfolio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Cinzel (Headings) & Lato (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -19,10 +21,11 @@
         window.db = null;
         window.auth = null;
         window.userId = null;
-        window.artworksCollectionRef = null;
+        window.storiesCollectionRef = null;
         window.isFirebaseReady = false;
+        window.appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // Expose Firestore functions globally so they can be accessed from other script blocks
+        // Expose Firestore functions globally
         window.firestore_query = query;
         window.firestore_orderBy = orderBy;
         window.firestore_onSnapshot = onSnapshot;
@@ -32,1038 +35,802 @@
         window.firestore_collection = collection;
         window.firestore_addDoc = addDoc;
 
-
-        // Message Box function (replace alert)
+        // Message Box function
         window.showMessage = (message, type = 'info') => {
             const messageBox = document.createElement('div');
-            messageBox.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg text-white z-[9999] opacity-0 transition-opacity duration-300 transform translate-y-[-20px]`;
-            if (type === 'success') {
-                messageBox.classList.add('bg-green-500');
-            } else if (type === 'error') {
-                messageBox.classList.add('bg-red-500');
-            } else {
-                messageBox.classList.add('bg-blue-500');
-            }
+            messageBox.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg text-white z-[9999] opacity-0 transition-all duration-300 transform translate-y-[-20px] font-lato`;
+            if (type === 'success') messageBox.classList.add('bg-green-500');
+            else if (type === 'error') messageBox.classList.add('bg-red-500');
+            else if (type === 'warning') messageBox.classList.add('bg-yellow-500');
+            else messageBox.classList.add('bg-blue-500');
             messageBox.textContent = message;
             document.body.appendChild(messageBox);
-
             setTimeout(() => {
                 messageBox.classList.remove('opacity-0', 'translate-y-[-20px]');
                 messageBox.classList.add('opacity-100', 'translate-y-0');
-            }, 10); // Small delay to trigger transition
-
+            }, 10);
             setTimeout(() => {
                 messageBox.classList.remove('opacity-100', 'translate-y-0');
                 messageBox.classList.add('opacity-0', 'translate-y-[-20px]');
                 messageBox.addEventListener('transitionend', () => messageBox.remove(), { once: true });
-            }, 3000);
+            }, 4000);
+        };
+        
+        // Firestore & Community Stories Logic must be globally accessible
+        let unsubscribeFromStories;
+
+        window.renderStoryCard = (story) => {
+            const card = document.createElement('div');
+            card.className = 'reveal card-glow-container flex flex-col bg-card-bg-color rounded-xl border border-white/10 p-6';
+            const hasUserLiked = story.likedBy && story.likedBy.includes(window.userId);
+
+            const storyTextHtml = story.text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
+            const storyTitleHtml = story.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            card.innerHTML = `
+                <div class="flex-grow card-content">
+                    <h3 class="mt-0 font-bold text-[var(--color-gold)] mb-2">${storyTitleHtml}</h3>
+                    <p class="text-sm mb-4 leading-relaxed">${storyTextHtml}</p>
+                </div>
+                <div class="mt-auto pt-4 border-t border-white/10 card-content">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <button class="like-btn flex items-center gap-2 text-white px-4 py-2 rounded-md transition-colors ${hasUserLiked ? 'bg-pink-600' : 'bg-blue-500 hover:bg-blue-600'}" data-id="${story.id}" ${hasUserLiked ? 'disabled' : ''}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/></svg>
+                            <span data-lang="${hasUserLiked ? 'liked_btn' : 'like_btn'}">${window.translations[window.currentLang || 'id'][hasUserLiked ? 'liked_btn' : 'like_btn']}</span> (<span class="like-count">${story.likes || 0}</span>)
+                        </button>
+                    </div>
+                    <div class="comments-section">
+                        <h4 class="font-semibold mb-2" data-lang="comment_btn">${window.translations[window.currentLang || 'id'].comment_btn}</h4>
+                        <div class="comments-list text-sm text-gray-400 mb-4 max-h-24 overflow-y-auto p-2 border border-white/10 rounded-md bg-background-color">
+                            ${(story.comments && story.comments.length > 0) ? story.comments.map(comment => `<p class="p-1 border-b border-white/10">- ${comment.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`).join('') : `<p class="text-gray-500 italic">No comments yet.</p>`}
+                        </div>
+                        <form class="add-comment-form" data-id="${story.id}">
+                            <input type="text" placeholder="${window.translations[window.currentLang || 'id'].add_comment_placeholder}" required class="comment-input w-full p-2 rounded-md border border-white/20 bg-[#0a0a1a] text-sm focus:outline-none focus:border-[var(--color-accent)]">
+                            <button type="submit" class="submit-comment-btn mt-2 bg-[var(--color-accent)] text-white text-sm px-3 py-1 rounded-md hover:opacity-90" data-lang="comment_btn">${window.translations[window.currentLang || 'id'].comment_btn}</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+            return card;
         };
 
+        window.renderCommunityStories = () => {
+            const communityStoriesContainer = document.getElementById('communityStories');
+            if (!window.isFirebaseReady || !window.storiesCollectionRef || !communityStoriesContainer) {
+                return;
+            }
+            if (unsubscribeFromStories) unsubscribeFromStories();
+            
+            const q = window.firestore_query(window.storiesCollectionRef, window.firestore_orderBy("createdAt", "desc"));
+            
+            unsubscribeFromStories = window.firestore_onSnapshot(q, (snapshot) => {
+                communityStoriesContainer.innerHTML = '';
+                if (snapshot.empty) {
+                     communityStoriesContainer.innerHTML = `<p class="text-center col-span-full">Belum ada cerita komunitas. Jadilah yang pertama berbagi!</p>`;
+                } else {
+                    snapshot.forEach((doc) => {
+                        const storyCard = window.renderStoryCard({ id: doc.id, ...doc.data() });
+                        communityStoriesContainer.appendChild(storyCard);
+                    });
+                    const revealElements = document.querySelectorAll('#communityStories .reveal');
+                    const scrollObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    revealElements.forEach(el => scrollObserver.observe(el));
+                }
+            }, (error) => {
+                console.error("Error fetching stories:", error);
+            });
+        };
+
+
         // Initialize Firebase
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
 
         if (Object.keys(firebaseConfig).length > 0) {
-            window.firebaseApp = initializeApp(firebaseConfig);
-            window.auth = getAuth(window.firebaseApp);
-            window.db = getFirestore(window.firebaseApp);
+            try {
+                window.firebaseApp = initializeApp(firebaseConfig);
+                window.auth = getAuth(window.firebaseApp);
+                window.db = getFirestore(window.firebaseApp);
 
-            // Anonymous Sign-in
-            onAuthStateChanged(window.auth, async (user) => {
-                if (user) {
-                    window.userId = user.uid;
-                } else {
-                    try {
-                        // Attempt to sign in anonymously if not already signed in
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(window.auth, __initial_auth_token);
-                        } else {
-                            await signInAnonymously(window.auth);
+                onAuthStateChanged(window.auth, async (user) => {
+                    if (user) {
+                        window.userId = user.uid;
+                    } else {
+                        try {
+                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                await signInWithCustomToken(window.auth, __initial_auth_token);
+                            } else {
+                                await signInAnonymously(window.auth);
+                            }
+                            window.userId = window.auth.currentUser.uid;
+                        } catch (error) {
+                            console.error("Firebase Auth Error:", error);
                         }
-                        window.userId = window.auth.currentUser.uid;
-                        window.showMessage(window.translations[window.currentLang].anonymous_login_success, 'success');
-                    } catch (error) {
-                        console.error("Firebase Anonymous Auth Error:", error);
-                        window.showMessage(window.translations[window.currentLang].anonymous_login_error + error.message, 'error');
                     }
-                }
-                // Use the globally exposed collection function
-                window.artworksCollectionRef = window.firestore_collection(window.db, `artifacts/${appId}/public/data/communityArtworks`);
-                window.isFirebaseReady = true;
-                // Only render artworks once Firebase is ready and user ID is available
-                window.renderCommunityArtworks();
-            });
+                    
+                    if (window.userId && !window.isFirebaseReady) {
+                        window.storiesCollectionRef = window.firestore_collection(window.db, `artifacts/${window.appId}/public/data/communityStories`);
+                        window.isFirebaseReady = true;
+                        window.renderCommunityStories();
+                    }
+                });
+            } catch (error) {
+                 console.error("Firebase Init Error:", error);
+            }
         } else {
-            console.warn("Firebase config not found. Community features will not work without Firebase.");
-            window.showMessage("Firebase tidak dikonfigurasi. Fitur komunitas tidak akan berfungsi.", 'error');
+            console.warn("Firebase config not found.");
         }
     </script>
 
     <style>
-        /* Custom styles for gradients, shadows, and specific overrides not easily done with simple Tailwind classes */
         :root {
-            --primary-color-gold: #D4AF37; /* Traditional Gold */
-            --secondary-color-blue: #00d1ff; /* Futuristic Neon Blue */
-            --background-color: #0a0a1a; /* Dark Navy */
-            --card-bg-color: #1a1a2e; /* Darker Blue/Purple */
-            --text-color: #e0e0f0; /* Light Lavender */
+            --color-gold: #D4AF37;
+            --color-gold-rgb: 212, 175, 55;
+            --color-accent: #00A9FF; /* Neon Blue Accent */
+            --color-accent-rgb: 0, 169, 255;
+            --color-background: #1C1616;
+            --color-card: #251D1D;
+            --color-text: #EAE0D5;
+            --font-serif: 'Cinzel', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: var(--font-sans); 
+            background-color: var(--color-background);
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            color: var(--color-text); 
+            line-height: 1.7;
+        }
+        
+        h1, h2, h3, .nav-link, .logo-glow {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        html {
-            scroll-behavior: smooth;
+        h1 { font-size: clamp(3rem, 6vw, 4.5rem); line-height: 1.1; }
+        h2 { font-size: clamp(2.2rem, 5vw, 3rem); line-height: 1.2; text-transform: uppercase; }
+        h3 { font-size: clamp(1.5rem, 3vw, 1.8rem); line-height: 1.3; }
+
+        .ornamental-divider {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(to right, transparent, rgba(var(--color-gold-rgb), 0.5), transparent);
+            margin: 4rem 0;
         }
 
-        body {
-            font-family: 'Inter', sans-serif; /* Set Inter as the primary font */
+        /* Hero Section - Royal Hall */
+        #beranda {
+            background: radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.9) 80%), url('https://source.unsplash.com/1920x1080/?palace,interior,dark') center center/cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        #particle-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+        }
+        .hero-text { position: relative; z-index: 1; }
+
+        /* Card and Image Hover Effects */
+        .card-glow-container { 
+            position: relative; 
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+            border-radius: 0.75rem;
+        }
+        .card-glow-container:hover { 
+            transform: scale(1.05) translateY(-10px); 
+            box-shadow: 0 0 60px 10px rgba(var(--color-gold-rgb), 0.35); 
+        }
+        
+        /* Specific Glow Effects */
+        .logo-glow { 
+            animation: pulse-gold 6s infinite ease-in-out; 
+            text-shadow: 0 0 8px rgba(var(--color-gold-rgb), 0.7);
+        }
+        .title-glow { text-shadow: 0 0 20px rgba(var(--color-gold-rgb), 0.7); }
+        .title-glow-accent { text-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.7); }
+
+
+        @keyframes pulse-gold {
+            0%, 100% { text-shadow: 0 0 10px rgba(var(--color-gold-rgb), 0.7); }
+            50% { text-shadow: 0 0 35px rgba(var(--color-gold-rgb), 1); }
         }
 
-        /* Hero section background overlay for brightness control */
-        #beranda::before {
+        .cta-button {
+            transition: all 0.3s ease;
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: #fff;
+        }
+        .cta-button:hover { 
+            background-color: transparent;
+            color: var(--color-accent);
+            box-shadow: 0 0 20px 4px rgba(var(--color-accent-rgb), 0.6);
+        }
+
+
+        /* Navigation */
+        .nav-link { transition: color 0.3s, text-shadow 0.3s; font-size: 1.1rem; }
+        .nav-link:hover { color: var(--color-gold); text-shadow: 0 0 12px var(--color-gold); }
+        nav ul li a.active { color: var(--color-gold); text-shadow: 0 0 12px var(--color-gold); }
+
+        /* Card background with Batik/Songket motif */
+        .bg-card-bg-color {
+            background-color: var(--color-card);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(var(--color-gold-rgb), 0.2);
+        }
+        .bg-card-bg-color::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Placeholder background image - text removed */
-            background-image: url('https://placehold.co/1920x1080/0a0a1a/e0e0f0?text='); /* Text removed */
-            background-size: cover;
-            background-position: center;
-            z-index: 1;
-            filter: brightness(0.4);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/batik.png');
+            background-size: 100px; /* Larger batik motif */
+            opacity: 0.1;
+            z-index: 0;
         }
+        .card-content { position: relative; z-index: 1; } /* Content must be above the texture */
 
-        /* Specific styles for active navigation link */
-        nav ul li a.active {
-            color: var(--secondary-color-blue);
-            text-shadow: 0 0 8px var(--secondary-color-blue);
+        /* Scroll Reveal Animation */
+        .reveal {
+          opacity: 0;
+          transform: translateY(60px);
+          transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-
-        /* Mobile Navigation Toggle (Hamburger Menu) */
-        .mobile-nav-toggle span {
-            display: block;
-            position: absolute;
-            height: 3px;
-            width: 100%;
-            background: var(--text-color);
-            border-radius: 3px;
-            opacity: 1;
-            left: 0;
-            transform: rotate(0deg);
-            transition: .25s ease-in-out;
+        .reveal.visible {
+          opacity: 1;
+          transform: translateY(0);
         }
+        .mobile-nav-toggle span { display: block; position: absolute; height: 3px; width: 100%; background: var(--color-text-light); border-radius: 3px; opacity: 1; left: 0; transform: rotate(0deg); transition: .25s ease-in-out; }
         .mobile-nav-toggle span:nth-child(1) { top: 0px; }
         .mobile-nav-toggle span:nth-child(2) { top: 10px; }
         .mobile-nav-toggle span:nth-child(3) { top: 20px; }
-
-        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(2) {
-            opacity: 0;
-        }
-        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Responsive Mobile Menu Positioning */
+        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+        .mobile-nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
         @media (max-width: 768px) {
             .nav-items {
-                position: fixed;
-                inset: 0 0 0 30%; /* Menu from right, 70% width */
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 3rem;
-                background: rgba(10, 10, 26, 0.95);
-                backdrop-filter: blur(10px);
-                transform: translateX(100%);
-                transition: transform 350ms ease-out;
+                position: fixed; inset: 0 0 0 30%; flex-direction: column; justify-content: center; align-items: center;
+                gap: 3rem; padding: min(20vh, 10rem) 2rem; background: rgba(10, 10, 26, 0.98);
+                backdrop-filter: blur(12px); transform: translateX(100%); transition: transform 350ms ease-out;
             }
-
-            .nav-items.nav-open {
-                transform: translateX(0);
-            }
+            .nav-items.nav-open { transform: translateX(0); }
         }
     </style>
 </head>
-<body class="font-inter bg-background-color text-text-color">
+<body class="font-sans">
 
-    <header class="bg-background-color bg-opacity-80 backdrop-blur-md py-4 border-b border-card-bg-color fixed w-full top-0 z-50">
+    <header class="bg-black bg-opacity-50 backdrop-blur-sm py-4 fixed w-full top-0 z-50 border-b border-[var(--color-gold)]/20">
         <div class="container mx-auto px-4">
             <nav class="flex justify-between items-center">
-                <a href="#beranda" class="logo font-bold text-2xl md:text-3xl text-primary-color-gold drop-shadow-lg z-50">ARTBOY</a>
-                <button class="mobile-nav-toggle md:hidden absolute top-6 right-8 w-8 h-6 border-none bg-transparent cursor-pointer z-50" aria-controls="main-nav" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <a href="#beranda" class="logo-glow text-3xl text-[var(--color-gold)] font-bold z-50">ARTBOY</a>
                 <div class="nav-items hidden md:flex items-center gap-10" id="main-nav">
                     <ul class="flex md:flex-row flex-col list-none p-0 m-0 gap-10 md:gap-10 text-center">
-                        <li><a href="#beranda" class="text-text-color hover:text-secondary-color-blue hover:shadow-blue-glow transition-all duration-300 pb-1" data-lang="nav_home">Beranda</a></li>
-                        <li><a href="#galeri" class="text-text-color hover:text-secondary-color-blue hover:shadow-blue-glow transition-all duration-300 pb-1" data-lang="nav_gallery">Galeri</a></li>
-                        <li><a href="#imajinasi" class="text-text-color hover:text-secondary-color-blue hover:shadow-blue-glow transition-all duration-300 pb-1" data-lang="nav_imagination">Imajinasi</a></li>
-                        <li><a href="#tentang" class="text-text-color hover:text-secondary-color-blue hover:shadow-blue-glow transition-all duration-300 pb-1" data-lang="nav_about">Tentang</a></li>
-                        <li><a href="#kontak" class="text-text-color hover:text-secondary-color-blue hover:shadow-blue-glow transition-all duration-300 pb-1" data-lang="nav_contact">Kontak</a></li>
+                        <li><a href="#beranda" class="nav-link text-text-color transition-all duration-300 pb-1" data-lang="nav_home">Beranda</a></li>
+                        <li><a href="#galeri" class="nav-link text-text-color transition-all duration-300 pb-1" data-lang="nav_gallery">Galeri</a></li>
+                        <li><a href="#imajinasi" class="nav-link text-text-color transition-all duration-300 pb-1" data-lang="nav_imagination">Imajinasi</a></li>
+                        <li><a href="#tentang" class="nav-link text-text-color transition-all duration-300 pb-1" data-lang="nav_about">Tentang</a></li>
+                        <li><a href="#kontak" class="nav-link text-text-color transition-all duration-300 pb-1" data-lang="nav_contact">Kontak</a></li>
                     </ul>
-                    <button id="lang-toggle" class="lang-btn bg-card-bg-color border border-primary-color-gold text-primary-color-gold py-2 px-4 rounded-md cursor-pointer font-semibold transition-all duration-300 hover:bg-primary-color-gold hover:text-background-color">EN</button>
                 </div>
             </nav>
         </div>
     </header>
 
     <main>
-        <!-- ======================= HOME SECTION ======================= -->
-        <section id="beranda" class="relative flex flex-col items-center justify-center min-h-screen text-center py-20 px-4 border-b-0 overflow-hidden">
-            <div class="hero-text relative z-20">
-                <!-- Image slot with 3:1 aspect ratio (approx. 1500x500 pixels) -->
-                <img src="https://placehold.co/1500x500/D4AF37/0a0a1a?text=ARTBOY+Banner" onerror="this.onerror=null;this.src='https://placehold.co/1500x500/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="ARTBOY Banner" class="mx-auto mb-8 w-full max-w-5xl h-40 md:h-52 lg:h-64 rounded-lg border-4 border-primary-color-gold shadow-lg shadow-primary-color-gold/50 object-cover">
-                <h1 class="font-bold text-4xl md:text-6xl mb-4 leading-tight" data-lang="hero_title">Menggabungkan Seni <span class="text-primary-color-gold">Kontemporer</span> dengan <span class="text-secondary-color-blue">Teknologi</span> Masa Kini</h1>
-                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-lang="hero_subtitle">Sebuah eksplorasi artistik di mana kreativitas modern bertemu inovasi AI dan diabadikan melalui keamanan kriptografi.</p>
-                <a href="#galeri" class="cta-button bg-secondary-color-blue text-background-color py-3 px-8 rounded-md border-2 border-secondary-color-blue no-underline font-semibold transition-all duration-300 shadow-md shadow-secondary-color-blue/50 hover:bg-transparent hover:text-secondary-color-blue hover:shadow-lg hover:shadow-secondary-color-blue" data-lang="hero_cta">Jelajahi Karya</a>
+        <!-- ======================= HERO SECTION ======================= -->
+        <section id="beranda">
+            <canvas id="particle-canvas"></canvas>
+            <div class="hero-text text-center px-4">
+                 <div class="card-glow-container reveal">
+                    <img src="https://source.unsplash.com/1500x500/?futuristic,abstract-art" onerror="this.onerror=null;this.src='https://placehold.co/1500x500/1a1a2e/e0e0f0?text=Error+Loading+Image';" alt="ARTBOY Banner" class="mx-auto mb-8 w-full max-w-5xl h-auto rounded-lg border-4 border-[var(--color-gold)] object-cover">
+                </div>
+                <h1 class="title-glow text-white" data-lang="hero_title">Menggabungkan Seni <span class="text-[var(--color-gold)]">Kontemporer</span> dengan <span class="text-[var(--color-accent)]">Teknologi</span> Masa Kini</h1>
+                <p class="max-w-3xl mx-auto my-8 text-lg font-sans" data-lang="hero_subtitle">Sebuah eksplorasi artistik di mana kreativitas modern bertemu inovasi AI dan diabadikan melalui keamanan kriptografi.</p>
+                <a href="#galeri" class="cta-button py-3 px-10 rounded-md border-2 no-underline font-semibold text-lg">Jelajahi Karya</a>
             </div>
         </section>
 
         <!-- ======================= GALLERY SECTION ======================= -->
-        <section id="galeri" class="container mx-auto px-4 py-24 border-b border-card-bg-color">
-            <h2 class="section-title text-center font-bold text-4xl md:text-5xl mb-4 text-primary-color-gold" data-lang="gallery_title">Galeri Karya</h2>
-            <p class="section-subtitle text-center max-w-4xl mx-auto mb-16 text-lg" data-lang="gallery_subtitle">Setiap karya adalah dialog antara ekspresi artistik dan inovasi teknologi, di mana visi kontemporer diwujudkan dan diamankan di atas blockchain.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- GALLERY CARD 1 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+1" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 1" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#1 Bullboy smile</h3>
-                        <p class="text-text-color" data-lang="gallery_1_desc">Senyum ketika mendapatkan profit.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 2 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 2" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#2 Rugboy sad</h3>
-                        <p class="text-text-color" data-lang="gallery_2_desc">Sedih ketika di rugpull.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 3 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 3" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#3 Confused boy</h3>
-                        <p class="text-text-color" data-lang="gallery_3_desc">Bingung trading lagi atau tidak.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 4 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+4" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 4" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#4 Depression boy</h3>
-                        <p class="text-text-color" data-lang="gallery_4_desc">Depresi dan serakah antara take profit atau kena liquidasi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 5 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+5" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 5" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#5 Cyberpunk Gamelan</h3>
-                        <p class="text-text-color" data-lang="gallery_5_desc">Harmoni tradisional dengan sentuhan digital.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 6 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 6" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#6 Wayang Kulit Future</h3>
-                        <p class="text-text-color" data-lang="gallery_6_desc">Siluet klasik dalam lanskap neon.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 7 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+7" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 7" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#7 Batik Code</h3>
-                        <p class="text-text-color" data-lang="gallery_7_desc">Motif digital yang tak terhingga.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 8 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+8" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 8" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#8 Garuda Drone</h3>
-                        <p class="text-text-color" data-lang="gallery_8_desc">Penjaga langit masa depan.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 9 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+9" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 9" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#9 Barong Glitch</h3>
-                        <p class="text-text-color" data-lang="gallery_9_desc">Semangat kuno dalam kode rusak.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 10 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+10" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 10" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#10 Kuda Lumping Mech</h3>
-                        <p class="text-text-color" data-lang="gallery_10_desc">Ritual mekanis dari masa depan.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 11 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+11" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 11" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#11 Rice Terraces City</h3>
-                        <p class="text-text-color" data-lang="gallery_11_desc">Arsitektur hijau yang futuristik.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 12 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+12" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 12" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#12 Komodo Cyborg</h3>
-                        <p class="text-text-color" data-lang="gallery_12_desc">Penjaga pulau dengan augmentasi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 13 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+13" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 13" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#13 Balinese AI Dancer</h3>
-                        <p class="text-text-color" data-lang="gallery_13_desc">Gerakan anggun yang diprogram.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 14 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+14" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 14" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#14 Oracle of Borobudur</h3>
-                        <p class="text-text-color" data-lang="gallery_14_desc">Kebijaksanaan kuno di era digital.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 15 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+15" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 15" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#15 Floating Market Bots</h3>
-                        <p class="text-text-color" data-lang="gallery_15_desc">Robot pedagang di pasar air.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 16 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+16" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 16" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#16 Merapi Eruptron</h3>
-                        <p class="text-text-color" data-lang="gallery_16_desc">Kekuatan alam dalam bentuk robotik.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 17 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+17" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 17" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#17 Sawah Digital</h3>
-                        <p class="text-text-color" data-lang="gallery_17_desc">Petani masa depan.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 18 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+18" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 18" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#18 Badak Jawa Mech</h3>
-                        <p class="text-text-color" data-lang="gallery_18_desc">Konservasi robotik.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 19 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+19" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 19" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#19 Candi Data Center</h3>
-                        <p class="text-text-color" data-lang="gallery_19_desc">Pusat data berbentuk candi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 20 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+20" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 20" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#20 Perahu Pinisi Spaceliner</h3>
-                        <p class="text-text-color" data-lang="gallery_20_desc">Petualangan antarbintang.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 21 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+21" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 21" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#21 Batik Kripto</h3>
-                        <p class="text-text-color" data-lang="gallery_21_desc">Seni digital terenkripsi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 22 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+22" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 22" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#22 Ramayana Robotik</h3>
-                        <p class="text-text-color" data-lang="gallery_22_desc">Epos kuno diadaptasi teknologi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 23 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+23" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 23" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#23 Dewi Sri Hologram</h3>
-                        <p class="text-text-color" data-lang="gallery_23_desc">Simbol kemakmuran digital.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 24 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+24" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 24" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#24 Jembatan Ampera Nexus</h3>
-                        <p class="text-text-color" data-lang="gallery_24_desc">Infrastruktur kota cerdas.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 25 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+25" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 25" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#25 Gunung Bromo Koloni</h3>
-                        <p class="text-text-color" data-lang="gallery_25_desc">Pemukiman di lanskap vulkanik.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 26 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+26" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 26" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#26 Angklung Synthesizer</h3>
-                        <p class="text-text-color" data-lang="gallery_26_desc">Suara tradisional elektronik.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 27 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+27" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 27" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#27 Pura Digital</h3>
-                        <p class="text-text-color" data-lang="gallery_27_desc">Tempat ibadah virtual.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 28 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+28" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 28" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#28 Macan Tutul Cyber</h3>
-                        <p class="text-text-color" data-lang="gallery_28_desc">Predator hutan masa depan.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 29 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+29" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 29" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#29 Metropolis Jakarta</h3>
-                        <p class="text-text-color" data-lang="gallery_29_desc">Ibu kota yang berevolusi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 30 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+30" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 30" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#30 Tari Kecak Virtual</h3>
-                        <p class="text-text-color" data-lang="gallery_30_desc">Pertunjukan digital yang memukau.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 31 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+31" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 31" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#31 Keris Laser</h3>
-                        <p class="text-text-color" data-lang="gallery_31_desc">Senjata tradisional berteknologi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 32 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+32" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 32" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#32 Orangutan Droid</h3>
-                        <p class="text-text-color" data-lang="gallery_32_desc">Pelindung hutan digital.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 33 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+33" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 33" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#33 Rumah Adat Orbital</h3>
-                        <p class="text-text-color" data-lang="gallery_33_desc">Arsitektur tradisional di luar angkasa.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 34 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+34" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 34" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#34 Tari Saman Neon</h3>
-                        <p class="text-text-color" data-lang="gallery_34_desc">Gerakan dinamis dengan cahaya.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 35 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+35" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 35" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#35 Candi Prambanan Digital</h3>
-                        <p class="text-text-color" data-lang="gallery_35_desc">Keindahan kuil yang direkonstruksi.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 36 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+36" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 36" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#36 Harimau Sumatera Drone</h3>
-                        <p class="text-text-color" data-lang="gallery_36_desc">Penjaga fauna yang canggih.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 37 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+37" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 37" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#37 Reog Cybernetics</h3>
-                        <p class="text-text-color" data-lang="gallery_37_desc">Transformasi seni pertunjukan.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 38 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+38" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 38" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#38 Danau Toba Data Lake</h3>
-                        <p class="text-text-color" data-lang="gallery_38_desc">Penyimpanan informasi raksasa.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 39 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+39" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 39" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#39 Tarian Kecak Augmented</h3>
-                        <p class="text-text-color" data-lang="gallery_39_desc">Pengalaman imersif baru.</p>
-                    </div>
-                </div>
-                <!-- GALLERY CARD 40 -->
-                <div class="gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold">
-                    <img src="https://placehold.co/600x400/1a1a2e/e0e0f0?text=Artwork+40" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Artwork 40" class="w-full h-72 object-cover block rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="mt-0 font-bold text-xl text-primary-color-gold">#40 Nasi Goreng Nano</h3>
-                        <p class="text-text-color" data-lang="gallery_40_desc">Kuliner tradisional di level molekuler.</p>
-                    </div>
-                </div>
+        <section id="galeri" class="container mx-auto px-4 py-24">
+            <h2 class="text-center mb-16 text-[var(--color-gold)] reveal title-glow" data-lang="gallery_title">Galeri Karya</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="sigma 22.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Bullboy smile" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #1</h3><p class="text-sm text-text-dim" data-lang="gallery_1_desc">Senyum ketika mendapatkan profit.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="sigma 11.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Rugboy sad" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #2</h3><p class="text-sm text-text-dim" data-lang="gallery_2_desc">Sedih ketika di rugpull.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?confused,man" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Confused boy" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #3</h3><p class="text-sm text-text-dim" data-lang="gallery_3_desc">Bingung trading lagi atau tidak.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?stress,trader" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Depression boy" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #4</h3><p class="text-sm text-text-dim" data-lang="gallery_4_desc">Depresi dan serakah antara take profit atau kena liquidasi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?cyberpunk,gamelan" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Cyberpunk Gamelan" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #5</h3><p class="text-sm text-text-dim" data-lang="gallery_5_desc">Harmoni tradisional dengan sentuhan digital.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?wayang,neon" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Wayang Kulit Future" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #6</h3><p class="text-sm text-text-dim" data-lang="gallery_6_desc">Siluet klasik dalam lanskap neon.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?batik,code" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Batik Code" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #7</h3><p class="text-sm text-text-dim" data-lang="gallery_7_desc">Motif digital yang tak terhingga.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?garuda,drone" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Garuda Drone" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #8</h3><p class="text-sm text-text-dim" data-lang="gallery_8_desc">Penjaga langit masa depan.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?glitch,statue" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Barong Glitch" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #9</h3><p class="text-sm text-text-dim" data-lang="gallery_9_desc">Semangat kuno dalam kode rusak.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?mech,horse" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Kuda Lumping Mech" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #10</h3><p class="text-sm text-text-dim" data-lang="gallery_10_desc">Ritual mekanis dari masa depan.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?rice-terrace,cityscape" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Rice Terraces City" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #11</h3><p class="text-sm text-text-dim" data-lang="gallery_11_desc">Arsitektur hijau yang futuristik.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?cyborg,lizard" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Komodo Cyborg" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #12</h3><p class="text-sm text-text-dim" data-lang="gallery_12_desc">Penjaga pulau dengan augmentasi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?balinese-dancer,ai" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Balinese AI Dancer" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #13</h3><p class="text-sm text-text-dim" data-lang="gallery_13_desc">Gerakan anggun yang diprogram.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?borobudur,digital" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Oracle of Borobudur" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #14</h3><p class="text-sm text-text-dim" data-lang="gallery_14_desc">Kebijaksanaan kuno di era digital.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?floating-market,robot" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Floating Market Bots" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #15</h3><p class="text-sm text-text-dim" data-lang="gallery_15_desc">Robot pedagang di pasar air.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?volcano,robot" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Merapi Eruptron" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #16</h3><p class="text-sm text-text-dim" data-lang="gallery_16_desc">Kekuatan alam dalam bentuk robotik.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?digital,farm" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Sawah Digital" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #17</h3><p class="text-sm text-text-dim" data-lang="gallery_17_desc">Petani masa depan.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?rhino,mech" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Badak Jawa Mech" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #18</h3><p class="text-sm text-text-dim" data-lang="gallery_18_desc">Konservasi robotik.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?temple,server" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Candi Data Center" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #19</h3><p class="text-sm text-text-dim" data-lang="gallery_19_desc">Pusat data berbentuk candi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?sailing-ship,space" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Perahu Pinisi Spaceliner" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #20</h3><p class="text-sm text-text-dim" data-lang="gallery_20_desc">Petualangan antarbintang.</p></div></div>
+                 <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?batik,crypto" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Batik Kripto" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #21</h3><p class="text-sm text-text-dim" data-lang="gallery_21_desc">Seni digital terenkripsi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?ramayana,robot" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Ramayana Robotik" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #22</h3><p class="text-sm text-text-dim" data-lang="gallery_22_desc">Epos kuno diadaptasi teknologi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?goddess,hologram" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Dewi Sri Hologram" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #23</h3><p class="text-sm text-text-dim" data-lang="gallery_23_desc">Simbol kemakmuran digital.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?futuristic,bridge" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Jembatan Ampera Nexus" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #24</h3><p class="text-sm text-text-dim" data-lang="gallery_24_desc">Infrastruktur kota cerdas.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?volcano,colony" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Gunung Bromo Koloni" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #25</h3><p class="text-sm text-text-dim" data-lang="gallery_25_desc">Pemukiman di lanskap vulkanik.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?bamboo,synthesizer" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Angklung Synthesizer" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #26</h3><p class="text-sm text-text-dim" data-lang="gallery_26_desc">Suara tradisional elektronik.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?temple,virtual" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Pura Digital" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #27</h3><p data-lang="gallery_27_desc">Tempat ibadah virtual.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?leopard,cyber" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Macan Tutul Cyber" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">#28 Macan Tutul Cyber</h3><p class="text-sm text-text-dim" data-lang="gallery_28_desc">Predator hutan masa depan.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?jakarta,metropolis" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Metropolis Jakarta" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #29</h3><p data-lang="gallery_29_desc">Ibu kota yang berevolusi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?kecak-dance,virtual" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Tari Kecak Virtual" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #30</h3><p data-lang="gallery_30_desc">Pertunjukan digital yang memukau.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?dagger,laser" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Keris Laser" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #31</h3><p data-lang="gallery_31_desc">Senjata tradisional berteknologi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?orangutan,droid" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Orangutan Droid" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #32</h3><p data-lang="gallery_32_desc">Pelindung hutan digital.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?traditional-house,orbital" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Rumah Adat Orbital" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #33</h3><p data-lang="gallery_33_desc">Arsitektur tradisional di luar angkasa.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?dance,neon" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Tari Saman Neon" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #34</h3><p data-lang="gallery_34_desc">Gerakan dinamis dengan cahaya.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?prambanan,digital" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Candi Prambanan Digital" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #35</h3><p data-lang="gallery_35_desc">Keindahan kuil yang direkonstruksi.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?tiger,drone" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Harimau Sumatera Drone" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">#36 Harimau Sumatera Drone</h3><p data-lang="gallery_36_desc">Penjaga fauna yang canggih.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?mask,cybernetics" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Reog Cybernetics" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #37</h3><p data-lang="gallery_37_desc">Transformasi seni pertunjukan.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?lake,data" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Danau Toba Data Lake" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #38</h3><p data-lang="gallery_38_desc">Penyimpanan informasi raksasa.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?augmented-reality,dance" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Tarian Kecak Augmented" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #39</h3><p data-lang="gallery_39_desc">Pengalaman imersif baru.</p></div></div>
+                <div class="gallery-card card-glow-container bg-card-bg-color rounded-xl overflow-hidden reveal cursor-pointer"><img src="https://source.unsplash.com/600x400/?nano,food" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Error';" alt="Nasi Goreng Nano" class="w-full h-72 object-cover block"><div class="p-6 card-content"><h3 class="mt-0 font-bold text-[var(--color-gold)]">Karya #40</h3><p data-lang="gallery_40_desc">Kuliner tradisional di level molekuler.</p></div></div>
             </div>
         </section>
 
-        <!-- ======================= IMAGINATION SECTION ======================= -->
-        <section id="imajinasi" class="container mx-auto px-4 py-24 border-b border-card-bg-color">
-            <h2 class="section-title text-center font-bold text-4xl md:text-5xl mb-4 text-primary-color-gold" data-lang="imagination_title">Ruang Imajinasi</h2>
-            <p class="section-subtitle text-center max-w-4xl mx-auto mb-16 text-lg" data-lang="imagination_subtitle">Unggah karya seni digital Anda, biarkan imajinasi Anda melayang, dan bagikan dengan komunitas. Suka dan komentar tanpa perlu login!</p>
+         <div class="ornamental-divider"></div>
 
-            <div class="upload-form bg-card-bg-color p-8 rounded-xl border border-[#2a2a3f] mb-12">
-                <h3 class="font-bold text-2xl mb-6 text-primary-color-gold" data-lang="upload_form_title">Unggah Karya Anda</h3>
-                <form id="artworkUploadForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- ======================= IMAGINATION SECTION (REVISED) ======================= -->
+        <section id="imajinasi" class="container mx-auto px-4 py-24">
+            <h2 class="section-title text-center mb-4 text-[var(--color-gold)] reveal title-glow" data-lang="imagination_title">Ruang Imajinasi</h2>
+            <p class="section-subtitle text-center max-w-4xl mx-auto mb-16 text-lg reveal" data-lang="imagination_subtitle">Bagikan cerita di balik proses kreatif Anda. Bagaimana Anda mendapatkan ide? Apa yang menginspirasi Anda? Biarkan komunitas tahu!</p>
+
+            <div class="upload-form bg-card-bg-color p-8 rounded-xl border border-white/10 mb-12 max-w-4xl mx-auto reveal">
+                <h3 class="font-bold text-[var(--color-gold)] mb-6" data-lang="upload_form_title">Bagikan Cerita Anda</h3>
+                <form id="storyUploadForm" class="grid grid-cols-1 gap-6">
                     <div>
-                        <label for="artworkTitle" class="block text-text-color text-sm font-semibold mb-2" data-lang="upload_title_label">Judul Karya:</label>
-                        <input type="text" id="artworkTitle" name="artworkTitle" required class="w-full p-3 rounded-md border border-[#2a2a3f] bg-[#0a0a1a] text-text-color focus:outline-none focus:border-secondary-color-blue">
+                        <label for="storyTitle" class="block text-sm font-semibold mb-2" data-lang="upload_title_label">Judul Cerita:</label>
+                        <input type="text" id="storyTitle" name="storyTitle" required class="w-full p-3 rounded-md border border-white/20 bg-[#0a0a1a] focus:outline-none focus:border-[var(--color-accent)] transition-colors">
                     </div>
                     <div>
-                        <label for="artworkImage" class="block text-text-color text-sm font-semibold mb-2" data-lang="upload_image_label">URL Gambar (atau pilih file):</label>
-                        <input type="url" id="artworkImageURL" name="artworkImageURL" placeholder="https://contoh.com/gambar.jpg" class="w-full p-3 rounded-md border border-[#2a2a3f] bg-[#0a0a1a] text-text-color mb-4 focus:outline-none focus:border-secondary-color-blue">
-                        <input type="file" id="artworkImageFile" name="artworkImageFile" accept="image/*" class="w-full text-text-color focus:outline-none focus:border-secondary-color-blue">
+                        <label for="storyText" class="block text-sm font-semibold mb-2" data-lang="upload_story_label">Cerita Anda:</label>
+                        <textarea id="storyText" name="storyText" rows="6" required class="w-full p-3 rounded-md border border-white/20 bg-[#0a0a1a] focus:outline-none focus:border-[var(--color-accent)] transition-colors"></textarea>
                     </div>
-                    <div class="md:col-span-2">
-                        <label for="artworkDescription" class="block text-text-color text-sm font-semibold mb-2" data-lang="upload_description_label">Deskripsi Karya:</label>
-                        <textarea id="artworkDescription" name="artworkDescription" rows="4" required class="w-full p-3 rounded-md border border-[#2a2a3f] bg-[#0a0a1a] text-text-color focus:outline-none focus:border-secondary-color-blue"></textarea>
-                    </div>
-                    <div class="md:col-span-2 text-right">
-                        <button type="submit" class="cta-button bg-secondary-color-blue text-background-color py-3 px-8 rounded-md border-2 border-secondary-color-blue no-underline font-semibold transition-all duration-300 shadow-md shadow-secondary-color-blue/50 hover:bg-transparent hover:text-secondary-color-blue hover:shadow-lg hover:shadow-secondary-color-blue" data-lang="upload_submit_btn">Unggah Karya</button>
+                    <div class="text-right">
+                        <button type="submit" class="cta-button py-3 px-8 rounded-md border-2 no-underline font-semibold" data-lang="upload_submit_btn">Bagikan Cerita</button>
                     </div>
                 </form>
             </div>
 
-            <h3 class="section-title text-center font-bold text-3xl md:text-4xl mb-8 text-secondary-color-blue" data-lang="community_gallery_title">Karya Komunitas</h3>
-            <div id="communityArtworks" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Community artworks will be dynamically loaded here from Firestore -->
+            <h3 class="section-title text-center mt-24 mb-12 text-[var(--color-accent)] reveal title-glow-accent" data-lang="community_stories_title">Cerita Komunitas</h3>
+            <div id="communityStories" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Community stories will be dynamically loaded here from Firestore -->
+                 <p class="text-center col-span-full" data-lang="loading_stories">Memuat cerita...</p>
             </div>
         </section>
 
+        <div class="ornamental-divider"></div>
+
         <!-- ======================= ABOUT SECTION ======================= -->
-        <section id="tentang" class="container mx-auto px-4 py-24 border-b border-card-bg-color">
-            <h2 class="section-title text-center font-bold text-4xl md:text-5xl mb-4 text-primary-color-gold" data-lang="about_title">Tentang Saya</h2>
-            <div class="flex flex-col md:flex-row gap-12 items-center">
-                <div class="md:w-2/5">
-                    <img src="https://placehold.co/800x800/1a1a2e/e0e0f0?text=Kelvin+Sanjaya" onerror="this.onerror=null;this.src='https://placehold.co/800x800/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="Foto Kelvin Sanjaya" class="w-full rounded-lg shadow-lg">
+        <section id="tentang" class="container mx-auto px-4 py-24">
+            <h2 class="section-title text-center mb-16 text-[var(--color-gold)] reveal title-glow" data-lang="about_title">Tentang Saya</h2>
+            <div class="flex flex-col md:flex-row gap-12 items-center reveal">
+                <div class="md:w-2/5 card-glow-container rounded-lg">
+                    <img src="https://source.unsplash.com/800x800/?man,artist,studio" onerror="this.onerror=null;this.src='https://placehold.co/800x800/1a1a2e/e0e0f0?text=Error';" alt="Foto ARTBOY" class="w-full rounded-lg shadow-lg">
                 </div>
                 <div class="md:w-3/5">
-                    <h3 class="font-bold text-2xl md:text-3xl mb-4 text-primary-color-gold" data-lang="about_vision_title">VISI: Memadukan Seni Kontemporer dan Teknologi</h3>
-                    <p class="mb-4 text-lg leading-relaxed" data-lang="about_vision_p1">Saya adalah seorang seniman dan teknolog yang bersemangat untuk mendorong batas-batas kreativitas. Misi saya adalah menggabungkan seni kontemporer dengan teknologi mutakhir—seperti AI dan Kriptografi—untuk menciptakan karya yang relevan dan abadi di era digital.</p>
-                    <p class="text-lg leading-relaxed" data-lang="about_vision_p2">Saya menggunakan AI untuk mengeksplorasi bentuk-bentuk ekspresi artistik baru, menghasilkan interpretasi yang segar dan unik. Setiap karya kemudian diabadikan sebagai aset digital unik di blockchain, memastikan nilai dan keasliannya di dunia yang terus berkembang.</p>
+                    <h3 class="font-bold text-[var(--color-gold)] mb-4" data-lang="about_vision_title">VISI: Memadukan Seni Kontemporer dan Teknologi</h3>
+                    <p class="mb-4 text-lg" data-lang="about_vision_p1">Saya adalah seorang seniman dan teknolog yang bersemangat untuk mendorong batas-batas kreativitas. Misi saya adalah menggabungkan seni kontemporer dengan teknologi mutakhir—seperti AI dan Kriptografi—untuk menciptakan karya yang relevan dan abadi di era digital.</p>
+                    <p class="text-lg" data-lang="about_vision_p2">Saya menggunakan AI untuk mengeksplorasi bentuk-bentuk ekspresi artistik baru, menghasilkan interpretasi yang segar dan unik. Setiap karya kemudian diabadikan sebagai aset digital unik di blockchain, memastikan nilai dan keasliannya di dunia yang terus berkembang.</p>
                 </div>
             </div>
         </section>
+        
+        <div class="ornamental-divider"></div>
 
         <!-- ======================= CONTACT SECTION ======================= -->
         <section id="kontak" class="container mx-auto px-4 py-24">
-            <h2 class="section-title text-center font-bold text-4xl md:text-5xl mb-4 text-primary-color-gold" data-lang="contact_title">Hubungi Saya</h2>
-            <p class="section-subtitle text-center max-w-4xl mx-auto mb-16 text-lg" data-lang="contact_subtitle">Terbuka untuk kolaborasi, proyek komisi, atau diskusi tentang masa depan seni dan teknologi.</p>
-            <div class="contact-info bg-card-bg-color p-8 rounded-xl mt-8 border border-[#2a2a3f]">
-                <h3 class="font-bold text-2xl mb-4 text-primary-color-gold" data-lang="contact_info_title">Informasi Kontak</h3>
+            <h2 class="section-title text-center mb-4 text-[var(--color-gold)] reveal title-glow" data-lang="contact_title">Hubungi Saya</h2>
+            <p class="section-subtitle text-center max-w-4xl mx-auto mb-16 text-lg reveal" data-lang="contact_subtitle">Terbuka untuk kolaborasi, proyek komisi, atau diskusi tentang masa depan seni dan teknologi.</p>
+            <div class="contact-info bg-card-bg-color p-8 rounded-xl mt-8 border border-white/10 max-w-2xl mx-auto reveal">
+                <h3 class="font-bold text-[var(--color-gold)] mb-4" data-lang="contact_info_title">Informasi Kontak</h3>
                 <p class="mb-2 text-lg"><strong>Email:</strong> keljayaaa@gmail.com</p>
-                <p class="text-lg"><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" class="text-secondary-color-blue hover:underline">@KelvinSanj82713</a></p>
+                <p class="text-lg"><strong>X (Twitter):</strong> <a href="https://x.com/KelvinSanj82713" target="_blank" class="text-[var(--color-accent)] hover:underline">@KelvinSanj82713</a></p>
             </div>
-            <!-- Form removed as per previous structure. Add if needed later. -->
         </section>
     </main>
 
-    <footer class="bg-black text-center py-8 mt-16 border-t border-card-bg-color">
+    <footer class="bg-black text-center py-8 mt-16 border-t border-white/10">
         <div class="container mx-auto px-4">
-            <p class="text-text-color mb-4" data-lang="footer_copyright">&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.</p>
-            <div class="coin-address mt-8 pt-8 border-t border-[#2a2a3f]">
-                <p class="text-text-color text-lg" data-lang="footer_support"><strong>Dukung karya saya melalui (SOL):</strong></p>
-                <div class="address-box flex flex-col md:flex-row items-center justify-center flex-wrap gap-4 bg-background-color p-3 md:p-4 rounded-lg max-w-4xl mx-auto mt-2 border border-card-bg-color shadow-inner">
-                    <span id="coinAddress" class="font-mono break-all text-text-color text-base md:text-lg">FqiUwa6b5vmDTL1bDxBSCfEAiWqVrAJP9rJ57Apxpump</span>
-                    <button id="copyButton" class="copy-btn bg-primary-color-gold text-background-color border-none py-2 px-4 rounded-md cursor-pointer font-semibold transition-opacity duration-300 hover:opacity-90 whitespace-nowrap" data-lang="copy_btn">Salin</button>
-                </div>
-            </div>
+            <p class="mb-4" data-lang="footer_copyright">&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.</p>
         </div>
     </footer>
+    
+    <!-- Fullscreen Image Modal -->
+    <div id="fullscreen-modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[100] hidden opacity-0 transition-opacity duration-300 cursor-pointer">
+        <img id="fullscreen-image" src="" alt="Fullscreen Artwork" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg">
+    </div>
+
 
     <!-- JavaScript for website functionality -->
     <script>
-        // --- Translation Dictionary ---
-        window.translations = { // Make global for Firebase message
-            en: {
-                nav_home: "Home",
-                nav_gallery: "Gallery",
-                nav_imagination: "Imagination",
-                nav_about: "About",
-                nav_contact: "Contact",
-                hero_title: 'Blending <span class="text-primary-color-gold">Contemporary</span> Art with <span class="text-secondary-color-blue">Modern</span> Technology',
-                hero_subtitle: "An artistic exploration where modern creativity meets AI innovation and is immortalized through cryptographic security.",
-                hero_cta: "Explore Works",
-                gallery_title: "Gallery",
-                gallery_subtitle: "Each work is a dialogue between artistic expression and technological innovation, where contemporary vision is realized and secured on the blockchain.",
-                gallery_1_desc: "The smile when making a profit.",
-                gallery_2_desc: "The sadness when getting rugpulled.",
-                gallery_3_desc: "Confused whether to trade again or not.",
-                gallery_4_desc: "Depression and greed between taking profit or getting liquidated.",
-                gallery_5_desc: "Traditional harmony with a digital touch.",
-                gallery_6_desc: "Classic silhouettes in a neon landscape.",
-                gallery_7_desc: "Infinite digital motifs.",
-                gallery_8_desc: "Guardians of the future sky.",
-                gallery_9_desc: "Ancient spirit in corrupted code.",
-                gallery_10_desc: "Mechanical rituals from the future.",
-                gallery_11_desc: "Futuristic green architecture.",
-                gallery_12_desc: "Island guardians with augmentations.",
-                gallery_13_desc: "Graceful programmed movements.",
-                gallery_14_desc: "Ancient wisdom in the digital age.",
-                gallery_15_desc: "Robot traders in a water market.",
-                gallery_16_desc: "Natural power in robotic form.",
-                gallery_17_desc: "Future farmers.",
-                gallery_18_desc: "Robotic conservation.",
-                gallery_19_desc: "Temple-shaped data center.",
-                gallery_20_desc: "Interstellar adventure.",
-                gallery_21_desc: "Encrypted digital art.",
-                gallery_22_desc: "Ancient epic adapted with technology.",
-                gallery_23_desc: "Digital prosperity symbol.",
-                gallery_24_desc: "Smart city infrastructure.",
-                gallery_25_desc: "Settlement in volcanic landscapes.",
-                gallery_26_desc: "Traditional electronic sound.",
-                gallery_27_desc: "Virtual place of worship.",
-                gallery_28_desc: "Future jungle predator.",
-                gallery_29_desc: "Evolving capital city.",
-                gallery_30_desc: "Stunning digital performance.",
-                gallery_31_desc: "Technological traditional weapon.",
-                gallery_32_desc: "Digital forest protector.",
-                gallery_33_desc: "Traditional architecture in space.",
-                gallery_34_desc: "Dynamic movements with light.",
-                gallery_35_desc: "Reconstructed temple beauty.",
-                gallery_36_desc: "Advanced fauna guardian.",
-                gallery_37_desc: "Performing arts transformation.",
-                gallery_38_desc: "Giant information storage.",
-                gallery_39_desc: "New immersive experience.",
-                gallery_40_desc: "Traditional culinary at molecular level.",
-                imagination_title: "Imagination Space",
-                imagination_subtitle: "Upload your digital artwork, let your imagination soar, and share it with the community. Like and comment without needing to log in!",
-                upload_form_title: "Upload Your Artwork",
-                upload_title_label: "Artwork Title:",
-                upload_image_label: "Image URL (or select file):",
-                upload_description_label: "Artwork Description:",
-                upload_submit_btn: "Upload Artwork",
-                community_gallery_title: "Community Artworks",
-                like_btn: "Like",
-                comment_btn: "Comment",
-                add_comment_placeholder: "Add a comment...",
-                anonymous_login_success: "Logged in anonymously.",
-                anonymous_login_error: "Anonymous login failed: ",
-                upload_error_message: "Title and description must be filled, and either an image URL or a file must be provided.",
-                about_title: "About Me",
-                about_vision_title: "VISION: Blending Contemporary Art and Technology",
-                about_vision_p1: "I am an artist and technologist passionate about pushing the boundaries of creativity. My mission is to combine contemporary art with cutting-edge technology—such as AI and Cryptography—to create relevant and timeless works in the digital era.",
-                about_vision_p2: "I utilize AI to explore new forms of artistic expression, yielding fresh and unique interpretations. Each piece is then immortalized as a unique digital asset on the blockchain, ensuring its value and authenticity in an ever-evolving world.",
-                contact_title: "Contact Me",
-                contact_subtitle: "Open for collaborations, commission projects, or discussions about the future of art and technology.",
-                contact_info_title: "Contact Information",
-                footer_copyright: "&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.",
-                footer_support: "<strong>Support my work via (SOL):</strong>",
-                copy_btn: "Copy",
-                copied_btn: "Copied!",
-                copy_fail_btn: "Failed"
-            },
-            id: {
-                nav_home: "Beranda",
-                nav_gallery: "Galeri",
-                nav_imagination: "Imajinasi",
-                nav_about: "Tentang",
-                nav_contact: "Kontak",
-                hero_title: 'Menggabungkan Seni <span class="text-primary-color-gold">Kontemporer</span> dengan <span class="text-secondary-color-blue">Teknologi</span> Masa Kini',
-                hero_subtitle: "Sebuah eksplorasi artistik di mana kreativitas modern bertemu inovasi AI dan diabadikan melalui keamanan kriptografi.",
-                hero_cta: "Jelajahi Karya",
-                gallery_title: "Galeri Karya",
-                gallery_subtitle: "Setiap karya adalah dialog antara ekspresi artistik dan inovasi teknologi, di mana visi kontemporer diwujudkan dan diamankan di atas blockchain.",
-                gallery_1_desc: "Senyum ketika mendapatkan profit.",
-                gallery_2_desc: "Sedih ketika di rugpull.",
-                gallery_3_desc: "Bingung trading lagi atau tidak.",
-                gallery_4_desc: "Depresi dan serakah antara take profit atau kena liquidasi.",
-                gallery_5_desc: "Harmoni tradisional dengan sentuhan digital.",
-                gallery_6_desc: "Siluet klasik dalam lanskap neon.",
-                gallery_7_desc: "Motif digital yang tak terhingga.",
-                gallery_8_desc: "Penjaga langit masa depan.",
-                gallery_9_desc: "Semangat kuno dalam kode rusak.",
-                gallery_10_desc: "Ritual mekanis dari masa depan.",
-                gallery_11_desc: "Arsitektur hijau yang futuristik.",
-                gallery_12_desc: "Penjaga pulau dengan augmentasi.",
-                gallery_13_desc: "Gerakan anggun yang diprogram.",
-                gallery_14_desc: "Kebijaksanaan kuno di era digital.",
-                gallery_15_desc: "Robot pedagang di pasar air.",
-                gallery_16_desc: "Kekuatan alam dalam bentuk robotik.",
-                gallery_17_desc: "Petani masa depan.",
-                gallery_18_desc: "Konservasi robotik.",
-                gallery_19_desc: "Pusat data berbentuk candi.",
-                gallery_20_desc: "Petualangan antarbintang.",
-                gallery_21_desc: "Seni digital terenkripsi.",
-                gallery_22_desc: "Epos kuno diadaptasi teknologi.",
-                gallery_23_desc: "Simbol kemakmuran digital.",
-                gallery_24_desc: "Infrastruktur kota cerdas.",
-                gallery_25_desc: "Pemukiman di lanskap vulkanik.",
-                gallery_26_desc: "Suara tradisional elektronik.",
-                gallery_27_desc: "Tempat ibadah virtual.",
-                gallery_28_desc: "Predator hutan masa depan.",
-                gallery_29_desc: "Ibu kota yang berevolusi.",
-                gallery_30_desc: "Pertunjukan digital yang memukau.",
-                gallery_31_desc: "Senjata tradisional berteknologi.",
-                gallery_32_desc: "Pelindung hutan digital.",
-                gallery_33_desc: "Arsitektur tradisional di luar angkasa.",
-                gallery_34_desc: "Gerakan dinamis dengan cahaya.",
-                gallery_35_desc: "Keindahan kuil yang direkonstruksi.",
-                gallery_36_desc: "Penjaga fauna yang canggih.",
-                gallery_37_desc: "Transformasi seni pertunjukan.",
-                gallery_38_desc: "Penyimpanan informasi raksasa.",
-                gallery_39_desc: "Pengalaman imersif baru.",
-                gallery_40_desc: "Kuliner tradisional di level molekuler.",
-                imagination_title: "Ruang Imajinasi",
-                imagination_subtitle: "Unggah karya seni digital Anda, biarkan imajinasi Anda melayang, dan bagikan dengan komunitas. Suka dan komentar tanpa perlu login!",
-                upload_form_title: "Unggah Karya Anda",
-                upload_title_label: "Judul Karya:",
-                upload_image_label: "URL Gambar (atau pilih file):",
-                upload_description_label: "Deskripsi Karya:",
-                upload_submit_btn: "Unggah Karya",
-                community_gallery_title: "Karya Komunitas",
-                like_btn: "Suka",
-                comment_btn: "Komentar",
-                add_comment_placeholder: "Tambahkan komentar...",
-                anonymous_login_success: "Berhasil masuk secara anonim.",
-                anonymous_login_error: "Gagal masuk secara anonim: ",
-                upload_error_message: "Judul dan deskripsi karya harus diisi, dan salah satu URL gambar atau file harus disediakan.",
-            }
-        };
+        document.addEventListener('DOMContentLoaded', () => {
 
-        // Custom Tailwind colors
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-color-gold': '#D4AF37',
-                        'secondary-color-blue': '#00d1ff',
-                        'background-color': '#0a0a1a',
-                        'card-bg-color': '#1a1a2e',
-                        'text-color': '#e0e0f0',
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'blue-glow': '0 0 8px rgba(0, 209, 255, 0.7)',
-                    }
+            // --- Translation Dictionary ---
+            window.translations = {
+                en: {
+                    nav_home: "Home",
+                    nav_gallery: "Gallery",
+                    nav_imagination: "Imagination",
+                    nav_about: "About",
+                    nav_contact: "Contact",
+                    hero_title: 'Blending <span class="text-[var(--color-gold)]">Contemporary</span> Art with <span class="text-[var(--color-accent)]">Modern</span> Technology',
+                    hero_subtitle: "An artistic exploration where modern creativity meets AI innovation and is immortalized through cryptographic security.",
+                    hero_cta: "Explore Works",
+                    gallery_title: "Gallery",
+                    gallery_subtitle: "Each work is a dialogue between artistic expression and technological innovation, where contemporary vision is realized and secured on the blockchain.",
+                    imagination_title: "Imagination Space",
+                    imagination_subtitle: "Share the story behind your creative process. How do you get ideas? What inspires you? Let the community know!",
+                    upload_form_title: "Share Your Story",
+                    upload_title_label: "Story Title:",
+                    upload_story_label: "Your Story:",
+                    upload_submit_btn: "Share Story",
+                    community_stories_title: "Community Stories",
+                    like_btn: "Like",
+                    liked_btn: "Liked",
+                    comment_btn: "Comment",
+                    add_comment_placeholder: "Add a comment...",
+                    about_title: "About Me",
+                    about_vision_title: "VISION: Blending Contemporary Art and Technology",
+                    about_vision_p1: "I am an artist and technologist passionate about pushing the boundaries of creativity. My mission is to combine contemporary art with cutting-edge technology—such as AI and Cryptography—to create relevant and timeless works in the digital era.",
+                    about_vision_p2: "I utilize AI to explore new forms of artistic expression, yielding fresh and unique interpretations. Each piece is then immortalized as a unique digital asset on the blockchain, ensuring its value and authenticity in an ever-evolving world.",
+                    contact_title: "Contact Me",
+                    contact_subtitle: "Open for collaborations, commission projects, or discussions about the future of art and technology.",
+                    contact_info_title: "Contact Information",
+                    footer_copyright: "&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.",
+                },
+                id: {
+                    nav_home: "Beranda",
+                    nav_gallery: "Galeri",
+                    nav_imagination: "Imajinasi",
+                    nav_about: "Tentang",
+                    nav_contact: "Kontak",
+                    hero_title: 'Menggabungkan Seni <span class="text-[var(--color-gold)]">Kontemporer</span> dengan <span class="text-[var(--color-accent)]">Teknologi</span> Masa Kini',
+                    hero_subtitle: "Sebuah eksplorasi artistik di mana kreativitas modern bertemu inovasi AI dan diabadikan melalui keamanan kriptografi.",
+                    hero_cta: "Jelajahi Karya",
+                    gallery_title: "Galeri Karya",
+                    gallery_subtitle: "Setiap karya adalah dialog antara ekspresi artistik dan inovasi teknologi, di mana visi kontemporer diwujudkan dan diamankan di atas blockchain.",
+                    imagination_title: "Ruang Imajinasi",
+                    imagination_subtitle: "Bagikan cerita di balik proses kreatif Anda. Bagaimana Anda mendapatkan ide? Apa yang menginspirasi Anda? Biarkan komunitas tahu!",
+                    upload_form_title: "Bagikan Cerita Anda",
+                    upload_title_label: "Judul Cerita:",
+                    upload_story_label: "Cerita Anda:",
+                    upload_submit_btn: "Bagikan Cerita",
+                    community_stories_title: "Cerita Komunitas",
+                    like_btn: "Suka",
+                    liked_btn: "Disukai",
+                    comment_btn: "Komentar",
+                    add_comment_placeholder: "Tambahkan komentar...",
+                    about_title: "Tentang Saya",
+                    about_vision_title: "VISI: Memadukan Seni Kontemporer dan Teknologi",
+                    about_vision_p1: "Saya adalah seorang seniman dan teknolog yang bersemangat untuk mendorong batas-batas kreativitas. Misi saya adalah menggabungkan seni kontemporer dengan teknologi mutakhir—seperti AI dan Kriptografi—untuk menciptakan karya yang relevan dan abadi di era digital.",
+                    about_vision_p2: "Saya menggunakan AI untuk mengeksplorasi bentuk-bentuk ekspresi artistik baru, menghasilkan interpretasi yang segar dan unik. Setiap karya kemudian diabadikan sebagai aset digital unik di blockchain, memastikan nilai dan keasliannya di dunia yang terus berkembang.",
+                    contact_title: "Hubungi Saya",
+                    contact_subtitle: "Terbuka untuk kolaborasi, proyek komisi, atau diskusi tentang masa depan seni dan teknologi.",
+                    contact_info_title: "Informasi Kontak",
+                    footer_copyright: "&copy; 2025 Kelvin Sanjaya (ARTBOY). All Rights Reserved.",
                 }
-            }
-        }
+            };
 
-        // --- Script for Language Translation ---
-        const langToggleButton = document.getElementById('lang-toggle');
-        window.currentLang = 'id'; // Make global
+            // --- UI Elements & Event Listeners ---
+            const langToggleButton = document.getElementById('lang-toggle');
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav ul li a');
+            const copyButton = document.getElementById('copyButton');
+            const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+            const mainNav = document.getElementById('main-nav');
+            const storyUploadForm = document.getElementById('storyUploadForm');
+            const communityStoriesContainer = document.getElementById('communityStories');
 
-        // Function to apply translations
-        const applyTranslations = () => {
-            document.querySelectorAll('[data-lang]').forEach(element => {
-                const key = element.getAttribute('data-lang');
-                if (window.translations[window.currentLang][key]) {
-                    element.innerHTML = window.translations[window.currentLang][key];
-                }
-            });
-        };
+            window.currentLang = 'id';
 
-        if (langToggleButton) {
-            langToggleButton.addEventListener('click', () => {
-                window.currentLang = window.currentLang === 'id' ? 'en' : 'id';
-                langToggleButton.innerText = window.currentLang === 'id' ? 'EN' : 'ID';
-                applyTranslations(); // Apply translations after changing language
-                // Re-render community artworks only if Firebase is ready to avoid errors
-                if (window.isFirebaseReady) {
-                    window.renderCommunityArtworks();
-                }
-            });
-        }
-        applyTranslations(); // Apply translations on initial load
-
-        // --- Script to highlight active menu item on scroll ---
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('nav ul li a');
-
-        window.addEventListener('scroll', () => {
-            let current = 'beranda';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                // Adjust this offset based on header height
-                if (pageYOffset >= sectionTop - 70) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(a => {
-                a.classList.remove('active');
-                const href = a.getAttribute('href');
-                if (href && href.substring(1) === current) {
-                    a.classList.add('active');
-                }
-            });
-        });
-
-        // --- Script for coin address copy button ---
-        const copyButton = document.getElementById('copyButton');
-        const coinAddressText = document.getElementById('coinAddress').innerText;
-
-        if (copyButton) {
-            copyButton.addEventListener('click', () => {
-                const textArea = document.createElement('textarea');
-                textArea.value = coinAddressText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    copyButton.innerText = window.translations[window.currentLang].copied_btn;
-                    setTimeout(() => {
-                        copyButton.innerText = window.translations[window.currentLang].copy_btn;
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy address:', err);
-                    window.showMessage(window.translations[window.currentLang].copy_fail_btn, 'error');
-                }
-                document.body.removeChild(textArea);
-            });
-        }
-
-        // --- Script for Mobile Navigation (Hamburger Menu) ---
-        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-        const mainNav = document.getElementById('main-nav');
-
-        if(mobileNavToggle && mainNav){
-            const navMenuLinks = mainNav.querySelectorAll('a'); // Get links inside the mobile menu
-
-            mobileNavToggle.addEventListener('click', () => {
-                const isNavOpen = mainNav.classList.toggle('nav-open');
-                mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
-            });
-
-            // Close menu when a navigation link is clicked
-            navMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (mainNav.classList.contains('nav-open')) {
-                        mainNav.classList.remove('nav-open');
-                        mobileNavToggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            });
-        }
-
-        // --- Imajinasi Section Logic (Firestore Integration) ---
-        const artworkUploadForm = document.getElementById('artworkUploadForm');
-        const communityArtworksContainer = document.getElementById('communityArtworks');
-
-        // Function to render a single artwork card
-        window.renderArtworkCard = (artwork) => { // Make global
-            const card = document.createElement('div');
-            card.className = 'gallery-card bg-card-bg-color rounded-xl overflow-hidden border border-[#2a2a3f] transition-all duration-300 hover:translate-y-[-10px] hover:shadow-xl hover:shadow-primary-color-gold/30 hover:border-primary-color-gold';
-            card.innerHTML = `
-                <img src="${artwork.imageUrl || 'https://placehold.co/600x400/1a1a2e/e0e0f0?text=No+Image'}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a2e/e0e0f0?text=Image+Loading+Error';" alt="${artwork.title}" class="w-full h-72 object-cover block rounded-t-xl">
-                <div class="p-6">
-                    <h3 class="mt-0 font-bold text-xl text-primary-color-gold">${artwork.title}</h3>
-                    <p class="text-text-color text-sm mb-4">${artwork.description}</p>
-                    <div class="flex items-center space-x-4 mb-4">
-                        <button class="like-btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors" data-id="${artwork.id}" data-likes="${artwork.likes}" data-lang="like_btn">
-                            ${window.translations[window.currentLang].like_btn} (<span class="like-count">${artwork.likes || 0}</span>)
-                        </button>
-                    </div>
-                    <div class="comments-section">
-                        <h4 class="font-semibold text-text-color mb-2" data-lang="comment_btn">${window.translations[window.currentLang].comment_btn}</h4>
-                        <div class="comments-list text-sm text-gray-400 mb-4 max-h-24 overflow-y-auto p-2 border border-[#2a2a3f] rounded-md">
-                            ${(artwork.comments || []).map(comment => `<p>- ${comment}</p>`).join('')}
-                        </div>
-                        <form class="add-comment-form" data-id="${artwork.id}">
-                            <input type="text" placeholder="${window.translations[window.currentLang].add_comment_placeholder}" class="comment-input w-full p-2 rounded-md border border-[#2a2a3f] bg-[#0a0a1a] text-text-color text-sm focus:outline-none focus:border-secondary-color-blue">
-                            <button type="submit" class="submit-comment-btn mt-2 bg-secondary-color-blue text-background-color text-sm px-3 py-1 rounded-md hover:opacity-90 transition-opacity" data-lang="comment_btn">${window.translations[window.currentLang].comment_btn}</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
-
-        // Function to render all community artworks
-        window.renderCommunityArtworks = () => { // Make global
-            if (!window.isFirebaseReady) {
-                console.log("Firebase not ready, skipping artwork render.");
-                communityArtworksContainer.innerHTML = `<p class="text-center text-text-color" data-lang="loading_artworks">Loading artworks...</p>`;
-                applyTranslations(); // Apply loading text translation
-                return;
-            }
-            communityArtworksContainer.innerHTML = ''; // Clear existing artworks
-            // Use the globally exposed Firestore functions
-            const q = window.firestore_query(window.artworksCollectionRef, window.firestore_orderBy("createdAt", "desc"));
-
-            window.firestore_onSnapshot(q, (snapshot) => {
-                communityArtworksContainer.innerHTML = ''; // Clear again on update
-                snapshot.forEach((doc) => {
-                    const artworkData = { id: doc.id, ...doc.data() };
-                    communityArtworksContainer.appendChild(window.renderArtworkCard(artworkData));
-                });
-                window.addArtworkEventListeners(); // Add event listeners after rendering
-            }, (error) => {
-                console.error("Error fetching community artworks:", error);
-                window.showMessage(window.translations[window.currentLang].error_fetching_artworks + error.message, 'error');
-            });
-        };
-
-        // Function to add event listeners to dynamically created artwork cards
-        window.addArtworkEventListeners = () => { // Make global
-            // Like buttons
-            document.querySelectorAll('.like-btn').forEach(button => {
-                button.onclick = async (event) => {
-                    event.preventDefault(); // Prevent default button behavior
-                    const id = event.target.dataset.id;
-                    const currentLikes = parseInt(event.target.dataset.likes || '0'); // Get current likes from data attribute
-                    // Use the globally exposed Firestore functions
-                    const artworkDocRef = window.firestore_doc(window.db, "artifacts", window.appId, "public", "data", "communityArtworks", id);
-                    try {
-                        await window.firestore_updateDoc(artworkDocRef, {
-                            likes: currentLikes + 1
-                        });
-                        window.showMessage(window.translations[window.currentLang].like_success, 'success');
-                    } catch (error) {
-                        console.error("Error liking artwork:", error);
-                        window.showMessage(window.translations[window.currentLang].like_error + error.message, 'error');
-                    }
-                };
-            });
-
-            // Comment forms
-            document.querySelectorAll('.add-comment-form').forEach(form => {
-                form.onsubmit = async (event) => {
-                    event.preventDefault();
-                    const id = event.target.dataset.id;
-                    const commentInput = event.target.querySelector('.comment-input');
-                    const commentText = commentInput.value.trim();
-
-                    if (commentText) {
-                        // Use the globally exposed Firestore functions
-                        const artworkDocRef = window.firestore_doc(window.db, "artifacts", window.appId, "public", "data", "communityArtworks", id);
-                        try {
-                            await window.firestore_updateDoc(artworkDocRef, {
-                                comments: window.firestore_arrayUnion(commentText) // Add new comment to array without overwriting
-                            });
-                            commentInput.value = ''; // Clear input
-                            window.showMessage(window.translations[window.currentLang].comment_success, 'success');
-                        } catch (error) {
-                            console.error("Error adding comment:", error);
-                            window.showMessage(window.translations[window.currentLang].comment_error + error.message, 'error');
+            const applyTranslations = (lang = window.currentLang) => {
+                document.querySelectorAll('[data-lang]').forEach(element => {
+                    const key = element.getAttribute('data-lang');
+                    if (window.translations[lang] && window.translations[lang][key]) {
+                        if (element.placeholder !== undefined) {
+                            element.placeholder = window.translations[lang][key];
+                        } else {
+                            element.innerHTML = window.translations[lang][key];
                         }
                     }
-                };
-            });
-        }
+                });
+            };
 
-        // Handle artwork upload form submission
-        if (artworkUploadForm) {
-            artworkUploadForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                if (!window.isFirebaseReady) {
-                    window.showMessage(window.translations[window.currentLang].firebase_not_ready, 'error');
-                    return;
-                }
-
-                const title = document.getElementById('artworkTitle').value.trim();
-                const imageURL = document.getElementById('artworkImageURL').value.trim();
-                const imageFile = document.getElementById('artworkImageFile').files[0];
-                const description = document.getElementById('artworkDescription').value.trim();
-
-                let imageUrlToSave = '';
-
-                if (!title || !description) {
-                    window.showMessage(window.translations[window.currentLang].upload_error_message, 'error');
-                    return;
-                }
-
-                // Prioritize file upload, then URL, then no image
-                if (imageFile) {
-                    // Read file as Data URL (Base64)
-                    if (imageFile.size > 800 * 1024) { // Warning for files > 800KB (to leave some room for other data)
-                        window.showMessage(window.translations[window.currentLang].large_image_warning, 'warning');
+            if(langToggleButton) {
+                langToggleButton.addEventListener('click', () => {
+                    window.currentLang = window.currentLang === 'id' ? 'en' : 'id';
+                    langToggleButton.innerText = window.currentLang === 'id' ? 'EN' : 'ID';
+                    applyTranslations();
+                    if (window.isFirebaseReady) {
+                        window.renderCommunityStories();
                     }
-                    imageUrlToSave = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.onerror = () => {
-                            console.error("Error reading file.");
-                            window.showMessage(window.translations[window.currentLang].file_read_error, 'error');
-                            resolve('');
-                        };
-                        reader.readAsDataURL(imageFile);
+                });
+            }
+
+            window.addEventListener('scroll', () => {
+                let current = 'beranda';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(a => {
+                    a.classList.remove('active');
+                    if (a.getAttribute('href').substring(1) === current) {
+                        a.classList.add('active');
+                    }
+                });
+            });
+
+            if(copyButton) {
+                copyButton.addEventListener('click', () => {
+                    const coinAddressText = document.getElementById('coinAddress').innerText;
+                    navigator.clipboard.writeText(coinAddressText).then(() => {
+                        copyButton.innerText = window.translations[window.currentLang].copied_btn || "Copied!";
+                        setTimeout(() => {
+                            copyButton.innerText = window.translations[window.currentLang].copy_btn || "Copy";
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy address:', err);
                     });
-                    if (!imageUrlToSave) return; // Stop if file reading failed
-                } else if (imageURL) {
-                    imageUrlToSave = imageURL;
-                } else {
-                    window.showMessage(window.translations[window.currentLang].no_image_provided, 'warning');
+                });
+            }
+            
+            if(mobileNavToggle && mainNav){
+                const navMenuLinks = mainNav.querySelectorAll('a');
+                mobileNavToggle.addEventListener('click', () => {
+                    const isNavOpen = !mainNav.classList.contains('nav-open');
+                    mainNav.classList.toggle('nav-open', isNavOpen);
+                    mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
+                });
+                navMenuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (mainNav.classList.contains('nav-open')) {
+                            mainNav.classList.remove('nav-open');
+                            mobileNavToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+            
+            if (communityStoriesContainer) {
+                communityStoriesContainer.addEventListener('click', async (event) => {
+                    const likeBtn = event.target.closest('.like-btn');
+                    if (likeBtn && !likeBtn.disabled) {
+                        const id = likeBtn.dataset.id;
+                        const storyDocRef = window.firestore_doc(window.db, `artifacts/${window.appId}/public/data/communityStories`, id);
+                        try {
+                            const currentLikes = parseInt(likeBtn.querySelector('.like-count').textContent) || 0;
+                            await window.firestore_updateDoc(storyDocRef, {
+                                likes: currentLikes + 1,
+                                likedBy: window.firestore_arrayUnion(window.userId)
+                            });
+                        } catch (error) {
+                            console.error("Error liking story:", error);
+                        }
+                    }
+                });
+
+                communityStoriesContainer.addEventListener('submit', async (event) => {
+                    if(event.target.classList.contains('add-comment-form')) {
+                        event.preventDefault();
+                        const form = event.target;
+                        const id = form.dataset.id;
+                        const commentInput = form.querySelector('.comment-input');
+                        const commentText = commentInput.value.trim();
+                        if (commentText) {
+                            const storyDocRef = window.firestore_doc(window.db, `artifacts/${window.appId}/public/data/communityStories`, id);
+                            try {
+                                await window.firestore_updateDoc(storyDocRef, {
+                                    comments: window.firestore_arrayUnion(commentText)
+                                });
+                                commentInput.value = '';
+                            } catch (error) {
+                                console.error("Error adding comment:", error);
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (storyUploadForm) {
+                storyUploadForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    if (!window.isFirebaseReady || !window.userId) {
+                        window.showMessage("Firebase is not ready yet. Please wait.", 'error');
+                        return;
+                    }
+                    
+                    const submitButton = storyUploadForm.querySelector('button[type="submit"]');
+                    const originalButtonText = submitButton.innerHTML;
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Mengirim...';
+
+                    const title = document.getElementById('storyTitle').value.trim();
+                    const text = document.getElementById('storyText').value.trim();
+
+                    if (!title || !text) {
+                        window.showMessage("Title and story cannot be empty.", 'error');
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalButtonText;
+                        return;
+                    }
+
+                    try {
+                        await window.firestore_addDoc(window.storiesCollectionRef, {
+                            title,
+                            text,
+                            likes: 0,
+                            comments: [],
+                            likedBy: [],
+                            createdAt: new Date().getTime(),
+                            uploadedBy: window.userId
+                        });
+                        storyUploadForm.reset();
+                    } catch (error) {
+                        console.error("Error uploading story:", error);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalButtonText;
+                    }
+                });
+            }
+            
+            // --- Animation Logic ---
+
+            // Particle Animation
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let particlesArray;
+
+                function setupCanvas() {
+                    const hero = document.getElementById('beranda');
+                    if(hero) {
+                        canvas.width = hero.offsetWidth;
+                        canvas.height = hero.offsetHeight;
+                    }
+                }
+                setupCanvas();
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 1;
+                        this.speedX = Math.random() * 0.5 - 0.25;
+                        this.speedY = Math.random() * 0.5 - 0.25;
+                        this.color = 'rgba(224, 224, 240, 0.5)';
+                    }
+                    update() {
+                        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
 
-                try {
-                    // Use the globally exposed Firestore addDoc function
-                    await window.firestore_addDoc(window.artworksCollectionRef, {
-                        title: title,
-                        description: description,
-                        imageUrl: imageUrlToSave,
-                        likes: 0,
-                        comments: [],
-                        createdAt: new Date().getTime(), // Timestamp for ordering
-                        uploadedBy: window.userId // Store the anonymous user ID
-                    });
-                    window.showMessage(window.translations[window.currentLang].upload_success, 'success');
-                    artworkUploadForm.reset(); // Clear the form
-                } catch (error) {
-                    console.error("Error uploading artwork:", error);
-                    window.showMessage(window.translations[window.currentLang].upload_fail + error.message, 'error');
+                function initParticles() {
+                    particlesArray = [];
+                    let numberOfParticles = (canvas.height * canvas.width) / 12000;
+                    for (let i = 0; i < numberOfParticles; i++) {
+                        particlesArray.push(new Particle());
+                    }
+                }
+                initParticles();
+
+                function animateParticles() {
+                    if(!ctx) return;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particlesArray.length; i++) {
+                        particlesArray[i].update();
+                        particlesArray[i].draw();
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+                animateParticles();
+
+                window.addEventListener('resize', () => {
+                    setupCanvas();
+                    initParticles();
+                });
+            }
+
+            // Scroll Reveal Animation
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => scrollObserver.observe(el));
+            
+            // --- Fullscreen Image Modal Logic ---
+            const modal = document.getElementById('fullscreen-modal');
+            const modalImage = document.getElementById('fullscreen-image');
+            const gallery = document.querySelector('#galeri .grid');
+
+            const showModal = (imgSrc) => {
+                if (modal && modalImage) {
+                    modalImage.src = imgSrc;
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                    }, 10);
+                }
+            };
+
+            const hideModal = () => {
+                if (modal) {
+                    modal.classList.add('opacity-0');
+                    modal.addEventListener('transitionend', () => {
+                        modal.classList.add('hidden');
+                        modalImage.src = "";
+                    }, { once: true });
+                }
+            };
+            
+            if (gallery) {
+                gallery.addEventListener('click', (e) => {
+                    const card = e.target.closest('.gallery-card');
+                    if (card) {
+                        const cardImageSrc = card.querySelector('img').src;
+                        showModal(cardImageSrc);
+                    }
+                });
+            }
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideModal();
+                    }
+                });
+            }
+
+            // Add event listener for Escape key
+            window.addEventListener('keydown', (e) => {
+                if (modal && !modal.classList.contains('hidden') && e.key === 'Escape') {
+                    hideModal();
                 }
             });
-        }
+
+
+            // Initial Load
+            applyTranslations();
+
+        });
     </script>
 </body>
 </html>
