@@ -64,8 +64,83 @@
             background-color: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
             opacity: 0; visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s;
+            overflow: hidden; /* Penting untuk zoom */
         }
         .modal.open { opacity: 1; visibility: visible; }
+        
+        #modal-content {
+            position: relative;
+            transition: transform 0.3s ease-out;
+            cursor: grab;
+        }
+
+        #modalImage {
+            display: block;
+            max-width: 90vw;
+            max-height: 85vh;
+            transition: transform 0.2s ease-out;
+        }
+        #modal-content.is-zoomed {
+            cursor: move;
+        }
+
+        .modal-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.6);
+            padding: 8px 16px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .modal-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+        }
+        .modal-btn:hover {
+            color: var(--color-gold);
+        }
+        
+        /* Custom styling untuk zoom slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 150px;
+            height: 4px;
+            background: #555;
+            outline: none;
+            border-radius: 2px;
+            transition: opacity 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-gold);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #111;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-gold);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #111;
+        }
         
         nav a.active { color: var(--color-gold); }
 
@@ -159,88 +234,25 @@
     <!-- NFT Modal -->
     <div id="modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0" id="modal-backdrop"></div>
-        <div class="relative"><img id="modalImage" src="" alt="NFT Artwork"></div>
+        <div id="modal-content">
+            <img id="modalImage" src="" alt="NFT Artwork">
+        </div>
+        <div class="modal-controls">
+            <span class="text-white text-lg">-</span>
+            <input type="range" id="zoom-slider" min="100" max="400" value="100" step="10">
+            <span class="text-white text-lg">+</span>
+            <button id="close-modal-btn" class="modal-btn" title="Close">X</button>
+        </div>
     </div>
 
     <!-- JavaScript Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- DATA & KONFIGURASI WEBSITE ---
             const walletAddress = "FqiUwa6b5vmDTL1bDxBSCfEAiWqVrAJP9rJ57Apxpump";
-            
-            // =======================================================================================
-            // === AREA EDIT GAMBAR, JUDUL, & DESKRIPSI NFT ===
-            // =======================================================================================
             const nftData = [
-                { id: 1, title: { id: "Bullish boy #1", en: "Golden Crystal #1" }, description: { id: "Fragmen kosmik berkilauan.", en: "A shimmering cosmic fragment." }, imageUrl: "sigma 22.jpg" },
-                { id: 2, title: { id: "Bearish boy #2", en: "Digital Orb #2" }, description: { id: "Pusaran data murni.", en: "A vortex of pure data." }, imageUrl: "sigma 11.jpg" },
-                { id: 3, title: { id: "Confused boy #3", en: "Ancient Artifact #3" }, description: { id: "Relik dari peradaban siber.", en: "Relic from a cyber civilization." }, imageUrl: "sigma 1111.jpg" },
-                { id: 4, title: { id: "Derpressed boy #4", en: "Golden Singularity #4" }, description: { id: "Momen penciptaan digital.", en: "A moment of digital creation." }, imageUrl: "sigma 222222.jpg" },
-                { id: 5, title: { id: "Kunci Kripto #5", en: "Crypto Key #5" }, description: { id: "Membuka pintu ke realitas baru.", en: "Unlocks a door to a new reality." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+5" },
-                { id: 6, title: { id: "Karya #6", en: "Artwork #6" }, description: { id: "Deskripsi #6", en: "Description #6" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+6" },
-                { id: 7, title: { id: "Karya #7", en: "Artwork #7" }, description: { id: "Deskripsi #7", en: "Description #7" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+7" },
-                { id: 8, title: { id: "Karya #8", en: "Artwork #8" }, description: { id: "Deskripsi #8", en: "Description #8" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+8" },
-                { id: 9, title: { id: "Karya #9", en: "Artwork #9" }, description: { id: "Deskripsi #9", en: "Description #9" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+9" },
-                { id: 10, title: { id: "Karya #10", en: "Artwork #10" }, description: { id: "Deskripsi #10", en: "Description #10" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+10" },
-                { id: 11, title: { id: "Karya #11", en: "Artwork #11" }, description: { id: "Deskripsi #11", en: "Description #11" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+11" },
-                { id: 12, title: { id: "Karya #12", en: "Artwork #12" }, description: { id: "Deskripsi #12", en: "Description #12" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+12" },
-                { id: 13, title: { id: "Karya #13", en: "Artwork #13" }, description: { id: "Deskripsi #13", en: "Description #13" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+13" },
-                { id: 14, title: { id: "Karya #14", en: "Artwork #14" }, description: { id: "Deskripsi #14", en: "Description #14" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+14" },
-                { id: 15, title: { id: "Karya #15", en: "Artwork #15" }, description: { id: "Deskripsi #15", en: "Description #15" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+15" },
-                { id: 16, title: { id: "Karya #16", en: "Artwork #16" }, description: { id: "Deskripsi #16", en: "Description #16" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+16" },
-                { id: 17, title: { id: "Karya #17", en: "Artwork #17" }, description: { id: "Deskripsi #17", en: "Description #17" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+17" },
-                { id: 18, title: { id: "Karya #18", en: "Artwork #18" }, description: { id: "Deskripsi #18", en: "Description #18" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+18" },
-                { id: 19, title: { id: "Karya #19", en: "Artwork #19" }, description: { id: "Deskripsi #19", en: "Description #19" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+19" },
-                { id: 20, title: { id: "Karya #20", en: "Artwork #20" }, description: { id: "Deskripsi #20", en: "Description #20" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+20" },
-                { id: 21, title: { id: "Karya #21", en: "Artwork #21" }, description: { id: "Deskripsi #21", en: "Description #21" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+21" },
-                { id: 22, title: { id: "Karya #22", en: "Artwork #22" }, description: { id: "Deskripsi #22", en: "Description #22" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+22" },
-                { id: 23, title: { id: "Karya #23", en: "Artwork #23" }, description: { id: "Deskripsi #23", en: "Description #23" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+23" },
-                { id: 24, title: { id: "Karya #24", en: "Artwork #24" }, description: { id: "Deskripsi #24", en: "Description #24" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+24" },
-                { id: 25, title: { id: "Karya #25", en: "Artwork #25" }, description: { id: "Deskripsi #25", en: "Description #25" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+25" },
-                { id: 26, title: { id: "Karya #26", en: "Artwork #26" }, description: { id: "Deskripsi #26", en: "Description #26" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+26" },
-                { id: 27, title: { id: "Karya #27", en: "Artwork #27" }, description: { id: "Deskripsi #27", en: "Description #27" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+27" },
-                { id: 28, title: { id: "Karya #28", en: "Artwork #28" }, description: { id: "Deskripsi #28", en: "Description #28" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+28" },
-                { id: 29, title: { id: "Karya #29", en: "Artwork #29" }, description: { id: "Deskripsi #29", en: "Description #29" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+29" },
-                { id: 30, title: { id: "Karya #30", en: "Artwork #30" }, description: { id: "Deskripsi #30", en: "Description #30" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+30" },
-                { id: 31, title: { id: "Karya #31", en: "Artwork #31" }, description: { id: "Deskripsi #31", en: "Description #31" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+31" },
-                { id: 32, title: { id: "Karya #32", en: "Artwork #32" }, description: { id: "Deskripsi #32", en: "Description #32" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+32" },
-                { id: 33, title: { id: "Karya #33", en: "Artwork #33" }, description: { id: "Deskripsi #33", en: "Description #33" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+33" },
-                { id: 34, title: { id: "Karya #34", en: "Artwork #34" }, description: { id: "Deskripsi #34", en: "Description #34" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+34" },
-                { id: 35, title: { id: "Karya #35", en: "Artwork #35" }, description: { id: "Deskripsi #35", en: "Description #35" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+35" },
-                { id: 36, title: { id: "Karya #36", en: "Artwork #36" }, description: { id: "Deskripsi #36", en: "Description #36" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+36" },
-                { id: 37, title: { id: "Karya #37", en: "Artwork #37" }, description: { id: "Deskripsi #37", en: "Description #37" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+37" },
-                { id: 38, title: { id: "Karya #38", en: "Artwork #38" }, description: { id: "Deskripsi #38", en: "Description #38" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+38" },
-                { id: 39, title: { id: "Karya #39", en: "Artwork #39" }, description: { id: "Deskripsi #39", en: "Description #39" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+39" },
-                { id: 40, title: { id: "Karya #40", en: "Artwork #40" }, description: { id: "Deskripsi #40", en: "Description #40" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+40" },
-            ];
-            // =======================================================================================
-            // === AKHIR DARI AREA EDIT ===
-            // =======================================================================================
-            const translations = { 
-                id: { 
-                    title: "ARTBOY Galeri NFT", subtitle: "Di mana seni bertemu rantai digital.", 
-                    nav_home: "Beranda", nav_collection: "Koleksi", nav_game: "Game", nav_about: "Tentang", nav_contact: "Kontak", 
-                    copied: "Tersalin!", footer: "Didukung oleh Aboy Chain", 
-                    welcome_title: "Selamat Datang di ARTBOY Gallery", welcome_text: "Jelajahi persimpangan antara kreativitas tanpa batas dan inovasi teknologi.", 
-                    about_title: "Manifesto Digital Kami", about_p1: "ARTBOY Gallery bukan sekadar galeri; ini adalah sebuah revolusi. Kami lahir dari persimpangan antara seni yang berani dan teknologi blockchain yang tak terhentikan. Visi kami adalah mengabadikan percikan kreativitas murni ke dalam sebuah warisan digital yang transparan, abadi, dan dapat diakses oleh seluruh penjuru dunia.", 
-                    contact_title: "Hubungi Kami", contact_text: "Punya pertanyaan, proposal kolaborasi, atau hanya ingin menyapa? Kami akan senang mendengar dari Anda.", 
-                    contact_email_label: "Email:", address_title: "Coin Address", 
-                    game_start: "MULAI", game_restart: "MAIN LAGI", game_over: "GAME OVER", 
-                    game_start_instruct: "Tekan tombol untuk Mulai", game_instruct: "Klik di dalam area game untuk memulai. Gunakan panah untuk bergerak dan spasi untuk menembak." 
-                }, 
-                en: { 
-                    title: "ARTBOY NFT Gallery", subtitle: "Where art meets the digital chain.", 
-                    nav_home: "Home", nav_collection: "Collection", nav_game: "Game", nav_about: "About", nav_contact: "Contact", 
-                    copied: "Copied!", footer: "Powered by Aboy Chain", 
-                    welcome_title: "Welcome to ARTBOY Gallery", welcome_text: "Explore the intersection of boundless creativity and technological innovation.", 
-                    about_title: "Our Digital Manifesto", about_p1: "ARTBOY Gallery is more than just a gallery; it's a revolution. We were born from the intersection of bold art and the unstoppable force of blockchain technology. Our vision is to immortalize the spark of pure creativity into a digital legacy that is transparent, eternal, and accessible to every corner of the globe.",
-                    contact_title: "Contact Us", contact_text: "Have a question, a collaboration proposal, or just want to say hello? We'd love to hear from you.", 
-                    contact_email_label: "Email:", address_title: "Coin Address", 
-                    game_start: "START", game_restart: "RESTART", game_over: "GAME OVER", 
-                    game_start_instruct: "Press the button to Start", game_instruct: "Click inside the game area to start. Use arrow keys to move and space to shoot." 
-                } 
-            };
+                { id: 1, title: { id: "Bullish boy #1", en: "Golden Crystal #1" }, description: { id: "Fragmen kosmik berkilauan.", en: "A shimmering cosmic fragment." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+1" }, { id: 2, title: { id: "Bearish boy #2", en: "Digital Orb #2" }, description: { id: "Pusaran data murni.", en: "A vortex of pure data." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+2" }, { id: 3, title: { id: "Confused boy #3", en: "Ancient Artifact #3" }, description: { id: "Relik dari peradaban siber.", en: "Relic from a cyber civilization." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+3" }, { id: 4, title: { id: "Derpressed boy #4", en: "Golden Singularity #4" }, description: { id: "Momen penciptaan digital.", en: "A moment of digital creation." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+4" }, { id: 5, title: { id: "Kunci Kripto #5", en: "Crypto Key #5" }, description: { id: "Membuka pintu ke realitas baru.", en: "Unlocks a door to a new reality." }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+5" }, { id: 6, title: { id: "Karya #6", en: "Artwork #6" }, description: { id: "Deskripsi #6", en: "Description #6" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+6" }, { id: 7, title: { id: "Karya #7", en: "Artwork #7" }, description: { id: "Deskripsi #7", en: "Description #7" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+7" }, { id: 8, title: { id: "Karya #8", en: "Artwork #8" }, description: { id: "Deskripsi #8", en: "Description #8" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+8" }, { id: 9, title: { id: "Karya #9", en: "Artwork #9" }, description: { id: "Deskripsi #9", en: "Description #9" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+9" }, { id: 10, title: { id: "Karya #10", en: "Artwork #10" }, description: { id: "Deskripsi #10", en: "Description #10" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+10" }, { id: 11, title: { id: "Karya #11", en: "Artwork #11" }, description: { id: "Deskripsi #11", en: "Description #11" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+11" }, { id: 12, title: { id: "Karya #12", en: "Artwork #12" }, description: { id: "Deskripsi #12", en: "Description #12" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+12" }, { id: 13, title: { id: "Karya #13", en: "Artwork #13" }, description: { id: "Deskripsi #13", en: "Description #13" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+13" }, { id: 14, title: { id: "Karya #14", en: "Artwork #14" }, description: { id: "Deskripsi #14", en: "Description #14" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+14" }, { id: 15, title: { id: "Karya #15", en: "Artwork #15" }, description: { id: "Deskripsi #15", en: "Description #15" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+15" }, { id: 16, title: { id: "Karya #16", en: "Artwork #16" }, description: { id: "Deskripsi #16", en: "Description #16" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+16" }, { id: 17, title: { id: "Karya #17", en: "Artwork #17" }, description: { id: "Deskripsi #17", en: "Description #17" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+17" }, { id: 18, title: { id: "Karya #18", en: "Artwork #18" }, description: { id: "Deskripsi #18", en: "Description #18" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+18" }, { id: 19, title: { id: "Karya #19", en: "Artwork #19" }, description: { id: "Deskripsi #19", en: "Description #19" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+19" }, { id: 20, title: { id: "Karya #20", en: "Artwork #20" }, description: { id: "Deskripsi #20", en: "Description #20" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+20" }, { id: 21, title: { id: "Karya #21", en: "Artwork #21" }, description: { id: "Deskripsi #21", en: "Description #21" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+21" }, { id: 22, title: { id: "Karya #22", en: "Artwork #22" }, description: { id: "Deskripsi #22", en: "Description #22" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+22" }, { id: 23, title: { id: "Karya #23", en: "Artwork #23" }, description: { id: "Deskripsi #23", en: "Description #23" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+23" }, { id: 24, title: { id: "Karya #24", en: "Artwork #24" }, description: { id: "Deskripsi #24", en: "Description #24" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+24" }, { id: 25, title: { id: "Karya #25", en: "Artwork #25" }, description: { id: "Deskripsi #25", en: "Description #25" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+25" }, { id: 26, title: { id: "Karya #26", en: "Artwork #26" }, description: { id: "Deskripsi #26", en: "Description #26" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+26" }, { id: 27, title: { id: "Karya #27", en: "Artwork #27" }, description: { id: "Deskripsi #27", en: "Description #27" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+27" }, { id: 28, title: { id: "Karya #28", en: "Artwork #28" }, description: { id: "Deskripsi #28", en: "Description #28" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+28" }, { id: 29, title: { id: "Karya #29", en: "Artwork #29" }, description: { id: "Deskripsi #29", en: "Description #29" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+29" }, { id: 30, title: { id: "Karya #30", en: "Artwork #30" }, description: { id: "Deskripsi #30", en: "Description #30" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+30" }, { id: 31, title: { id: "Karya #31", en: "Artwork #31" }, description: { id: "Deskripsi #31", en: "Description #31" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+31" }, { id: 32, title: { id: "Karya #32", en: "Artwork #32" }, description: { id: "Deskripsi #32", en: "Description #32" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+32" }, { id: 33, title: { id: "Karya #33", en: "Artwork #33" }, description: { id: "Deskripsi #33", en: "Description #33" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+33" }, { id: 34, title: { id: "Karya #34", en: "Artwork #34" }, description: { id: "Deskripsi #34", en: "Description #34" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+34" }, { id: 35, title: { id: "Karya #35", en: "Artwork #35" }, description: { id: "Deskripsi #35", en: "Description #35" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+35" }, { id: 36, title: { id: "Karya #36", en: "Artwork #36" }, description: { id: "Deskripsi #36", en: "Description #36" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+36" }, { id: 37, title: { id: "Karya #37", en: "Artwork #37" }, description: { id: "Deskripsi #37", en: "Description #37" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+37" }, { id: 38, title: { id: "Karya #38", en: "Artwork #38" }, description: { id: "Deskripsi #38", en: "Description #38" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+38" }, { id: 39, title: { id: "Karya #39", en: "Artwork #39" }, description: { id: "Deskripsi #39", en: "Description #39" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+39" }, { id: 40, title: { id: "Karya #40", en: "Artwork #40" }, description: { id: "Deskripsi #40", en: "Description #40" }, imageUrl: "https://placehold.co/600x600/FFD700/000000?text=Gacha+40" }, ];
+            const translations = { id: { title: "ARTBOY Galeri NFT", subtitle: "Di mana seni bertemu rantai digital.", nav_home: "Beranda", nav_collection: "Koleksi", nav_game: "Game", nav_about: "Tentang", nav_contact: "Kontak", copied: "Tersalin!", footer: "Didukung oleh Aboy Chain", welcome_title: "Selamat Datang di ARTBOY Gallery", welcome_text: "Jelajahi persimpangan antara kreativitas tanpa batas dan inovasi teknologi.", about_title: "Manifesto Digital Kami", about_p1: "ARTBOY Gallery bukan sekadar galeri; ini adalah sebuah revolusi. Kami lahir dari persimpangan antara seni yang berani dan teknologi blockchain yang tak terhentikan. Visi kami adalah mengabadikan percikan kreativitas murni ke dalam sebuah warisan digital yang transparan, abadi, dan dapat diakses oleh seluruh penjuru dunia.", contact_title: "Hubungi Kami", contact_email_label: "Email:", address_title: "Coin Address", game_start: "MULAI", game_restart: "MAIN LAGI", game_over: "GAME OVER", game_start_instruct: "Tekan tombol untuk Mulai", game_instruct: "Klik di dalam area game untuk memulai. Gunakan panah untuk bergerak dan spasi untuk menembak." }, en: { title: "ARTBOY NFT Gallery", subtitle: "Where art meets the digital chain.", nav_home: "Home", nav_collection: "Collection", nav_game: "Game", nav_about: "About", nav_contact: "Contact", copied: "Copied!", footer: "Powered by Aboy Chain", welcome_title: "Welcome to ARTBOY Gallery", welcome_text: "Explore the intersection of boundless creativity and technological innovation.", about_title: "Our Digital Manifesto", about_p1: "ARTBOY Gallery is more than just a gallery; it's a revolution. We were born from the intersection of bold art and the unstoppable force of blockchain technology. Our vision is to immortalize the spark of pure creativity into a digital legacy that is transparent, eternal, and accessible to every corner of the globe.", contact_title: "Contact Us", contact_email_label: "Email:", address_title: "Coin Address", game_start: "START", game_restart: "RESTART", game_over: "GAME OVER", game_start_instruct: "Press the button to Start", game_instruct: "Click inside the game area to start. Use arrow keys to move and space to shoot." } };
             let currentLang = 'id';
             
             function init() {
@@ -294,16 +306,101 @@
                     document.body.removeChild(textArea);
                 });
 
-                // Event listener untuk modal NFT
+                // --- Event Listeners untuk Modal NFT dengan Zoom & Pan ---
                 const modal = document.getElementById('modal');
+                const modalContent = document.getElementById('modal-content');
+                const modalImage = document.getElementById('modalImage');
+                const modalBackdrop = document.getElementById('modal-backdrop');
+                const zoomSlider = document.getElementById('zoom-slider');
+                const closeModalBtn = document.getElementById('close-modal-btn');
+
+                let scale = 1;
+                let isPanning = false;
+                let start = { x: 0, y: 0 };
+                let pan = { x: 0, y: 0 };
+
+                function openModal(imgSrc) {
+                    resetZoomAndPan();
+                    modalImage.src = imgSrc;
+                    modal.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeModal() {
+                    modal.classList.remove('open');
+                     document.body.style.overflow = 'auto';
+                }
+                
+                function resetZoomAndPan() {
+                    scale = 1;
+                    pan.x = 0;
+                    pan.y = 0;
+                    zoomSlider.value = 100;
+                    updateTransform();
+                    modalContent.classList.remove('is-zoomed');
+                }
+
+                function updateTransform() {
+                    modalContent.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${scale})`;
+                }
+
                 document.getElementById('galleryGrid').addEventListener('click', (e) => {
                     const card = e.target.closest('.nft-card-image-wrapper');
                     if (card) {
-                        document.getElementById('modalImage').src = card.querySelector('img').dataset.src;
-                        modal.classList.add('open');
+                        openModal(card.querySelector('img').dataset.src);
                     }
                 });
-                document.getElementById('modal-backdrop').addEventListener('click', () => modal.classList.remove('open'));
+
+                modalBackdrop.addEventListener('click', closeModal);
+                closeModalBtn.addEventListener('click', closeModal);
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('open')) {
+                        closeModal();
+                    }
+                });
+
+                zoomSlider.addEventListener('input', (e) => {
+                    scale = e.target.value / 100;
+                    updateTransform();
+                    if(scale > 1) {
+                        modalContent.classList.add('is-zoomed');
+                    } else {
+                        modalContent.classList.remove('is-zoomed');
+                    }
+                });
+                
+                modalContent.addEventListener('mousedown', (e) => {
+                    if (scale > 1) {
+                        e.preventDefault();
+                        isPanning = true;
+                        start.x = e.clientX - pan.x;
+                        start.y = e.clientY - pan.y;
+                        modalContent.style.cursor = 'grabbing';
+                    }
+                });
+
+                modalContent.addEventListener('mouseup', () => {
+                    if (scale > 1) {
+                        isPanning = false;
+                        modalContent.style.cursor = 'move';
+                    }
+                });
+                
+                modalContent.addEventListener('mouseleave', () => {
+                    isPanning = false;
+                     if (scale > 1) {
+                         modalContent.style.cursor = 'move';
+                     }
+                });
+
+                modalContent.addEventListener('mousemove', (e) => {
+                    if (isPanning) {
+                        e.preventDefault();
+                        pan.x = e.clientX - start.x;
+                        pan.y = e.clientY - start.y;
+                        updateTransform();
+                    }
+                });
             }
             
             function updateLanguage() {
